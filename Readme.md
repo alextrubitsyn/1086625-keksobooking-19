@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
-* Студент: [Александр Трубицын](https://up.htmlacademy.ru/javascript/19/user/1086625).
-* Наставник: `Неизвестно`.
+- Студент: [Александр Трубицын](https://up.htmlacademy.ru/javascript/19/user/1086625).
+- Наставник: Алексей Балесный.
 
 ---
 
