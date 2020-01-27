@@ -1,6 +1,18 @@
+'use strict';
+
 var NEARBY_ADS = 8;
 var PIN_OFFSET_X = 25;
 var PIN_OFFSET_Y = 70;
+var MIN_X = 1;
+var MAX_X = 1200;
+var MIN_Y = 130;
+var MAX_Y = 630;
+var TYPES_RESIDENCE = ["palace", "flat", "house", "bungalo"];
+var CONVENIENCES = ["wifi", "dishwasher", "parking", "washer", "elevator", "conditioner"];
+var CHECK_TIMES = ["12:00", "13:00", "14:00"];
+var MIN_PRICE = 1;
+var MAX_PRICE = 1000000;
+
 
 var getRandom = function (elements) {
   return elements[getRandomRange(0, elements.length)];
@@ -10,50 +22,46 @@ var getRandomRange = function (minNum, maxNum) {
   return Math.floor(Math.random() * (maxNum - minNum)) + minNum;
 }
 
-var getRandomSelect = function (elements) {
-  list = Array.from(elements);
-  var countElementsDel = getRandomRange(1, list.length - 1);
-  for (var i = 0; i < countElementsDel; i++) {
-    var selectedNum = getRandomRange(0, list.length);
-    list[selectedNum] = list[list.length - 1];
-    list.length--;
+var getRandomSelection = function (elements) {
+  var currentElements = elements.slice;
+  var countElementsDelete = getRandomRange(0, currentElements.length);
+  for (var i = 0; i < countElementsDelete; i++) {
+    var selectedNum = getRandomRange(0, currentElements.length);
+    currentElements[selectedNum] = currentElements[currentElements.length - 1];
+    currentElements.length--;
   }
-  return list;
+  return currentElements;
 }
 
 var createOffers = function (count) {
-  var MIN_X = 100;
-  var MAX_X = 500;
-  var MIN_Y = 130;
-  var MAX_Y = 630;
   var offers = [];
-  var typesResidence = ["palace", "flat", "house", "bungalo"];
-  var conveniences = ["wifi", "dishwasher", "parking", "washer", "elevator", "conditioner"];
-  var timeChecking = ["12:00", "13:00", "14:00"];
-  var photoAddresses = ["http://o0.github.io/assets/images/tokyo/hotel1.jpg", "http://o0.github.io/assets/images/tokyo/hotel2.jpg", "http://o0.github.io/assets/images/tokyo/hotel3.jpg"];
+  var timeChecking = getRandom(CHECK_TIMES);
 
   for (var i = 0; i < count; i++) {
     var adNum = i + 1;
+    var currentX = getRandomRange(MIN_X, MAX_X);
+    var currentY = getRandomRange(MIN_Y, MAX_Y);
+
     offers[i] = {
       author: {
         avatar: "img/avatars/user0" + adNum + ".png"
       },
       offer: {
         title: "Заголовок " + adNum,
-        address: "600, 350",
-        price: getRandomRange(100, 500),
-        type: getRandom(typesResidence),
-        rooms: getRandomRange(1, 3),
-        guests: getRandomRange(1, 5),
-        checkin: getRandom(timeChecking),
-        checkout: getRandom(timeChecking),
-        features: getRandomSelect(conveniences),
+        address: currentX + ", " + currentY,
+        price: getRandomRange(MIN_PRICE, MAX_PRICE + 1),
+        type: getRandom(TYPES_RESIDENCE),
+        rooms: getRandomRange(1, 4),
+        guests: getRandomRange(0, 4),
+        checkin: "после " + timeChecking,
+        checkout: "до " + timeChecking,
+        features: getRandomSelection(CONVENIENCES),
         description: "строка с описанием " + adNum,
-        photos: getRandom(photoAddresses)
+        photos: ["http://o0.github.io/assets/images/tokyo/hotel1.jpg", "http://o0.github.io/assets/images/tokyo/hotel2.jpg", "http://o0.github.io/assets/images/tokyo/hotel3.jpg"]
       },
       location: {
-        x: getRandomRange(MIN_X, MAX_X),
-        y: getRandomRange(MIN_Y, MAX_Y)
+        x: currentX,
+        y: currentY
       }
     }
   }
@@ -63,7 +71,7 @@ var createOffers = function (count) {
 
 var renderPin = function (element) {
   var pinElement = nearbyPinTemplate.cloneNode(true);
-  pinElement.style = "left: " + (element.location.x - PIN_OFFSET_X) + "px; top: " + (element.location.y - PIN_OFFSET_Y) + "px;";
+  pinElement.style.cssText = "left: " + (element.location.x - PIN_OFFSET_X) + "px; top: " + (element.location.y - PIN_OFFSET_Y) + "px;";
   pinElement.querySelector('img').src = element.author.avatar;
   pinElement.querySelector('img').alt = element.offer.title;
   return pinElement;
