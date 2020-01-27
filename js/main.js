@@ -12,23 +12,20 @@ var CONVENIENCES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'cond
 var CHECK_TIMES = ['12:00', '13:00', '14:00'];
 var MIN_PRICE = 1;
 var MAX_PRICE = 1000000;
-var MIN_LENGTH_STRING = 1;
-var MAX_LENGTH_STRING = 100;
 var MIN_COUNT_ROOMS = 1;
 var MAX_COUNT_ROOMS = 3;
 var MIN_COUNT_GUESTS = 0;
 var MAX_COUNT_GUESTS = 3;
-var MIN_COUNT_PHOTOS = 2;
-var MAX_COUNT_PHOTOS = 5;
+var COUNT_PHOTOS = 3;
 
 
 var getRandom = function (elements) {
   return elements[getRandomRange(0, elements.length)];
-}
+};
 
 var getRandomRange = function (minElement, maxElement) {
   return Math.floor(Math.random() * (maxElement - minElement)) + minElement;
-}
+};
 
 var getRandomSelection = function (elements) {
   var currentElements = elements.slice();
@@ -39,24 +36,15 @@ var getRandomSelection = function (elements) {
     currentElements.length--;
   }
   return currentElements;
-}
-
-var getRandomString = function (minLength, maxLength) {
-  var alphabet = "abcdefghijklmnopqrstuvwxyz";
-  var randomString = '';
-  while (randomString.length < getRandomRange(minLength, maxLength)) {
-    randomString += alphabet[getRandomRange(0, alphabet.length)];
-  }
-  return randomString;
-}
+};
 
 var getArrayPhotos = function (countPhotos) {
   var elements = [];
-  for (var i = 0; i < countPhotos; i++) {
-    elements[i] = 'http://' + getRandomString(MIN_LENGTH_STRING, MAX_LENGTH_STRING) + '/hotel' + (i + 1) + '.jpg';
+  for (var i = 0; i <= getRandomRange(0, countPhotos); i++) {
+    elements[i] = 'http://o0.github.io/assets/images/tokyo/hotel' + (i + 1) + '.jpg';
   }
   return elements;
-}
+};
 
 var createOffers = function (count) {
   var offers = [];
@@ -82,13 +70,13 @@ var createOffers = function (count) {
         checkout: 'до ' + timeChecking,
         features: getRandomSelection(CONVENIENCES),
         description: 'строка с описанием ' + sequenceNumber,
-        photos: getArrayPhotos(getRandomRange(MIN_COUNT_PHOTOS, MAX_COUNT_PHOTOS + 1))
+        photos: getArrayPhotos(COUNT_PHOTOS)
       },
       location: {
         x: currentX,
         y: currentY
       }
-    }
+    };
   }
   return offers;
 };
@@ -116,6 +104,3 @@ var nearbyPinTemplate = document.querySelector('#pin').content.querySelector('.m
 
 
 makePinBlock(createOffers(NEARBY_ADS));
-
-var deb = createOffers(8);
-debugger;
