@@ -226,7 +226,7 @@ var checkValidityRooms = function (countRooms) {
     titleCapacity.innerText = titleCapacityText;
     titleCapacity.style.color = '';
   };
-  if (countRooms < guestsSelector.options[indexGuestsSelected].value || countRooms === 100) {
+  if (countRooms < guestsSelector.options[indexGuestsSelected].value && countRooms < 100) {
     var titleCapacityText = titleCapacity.innerText;
     titleCapacity.innerText = 'Выберите заново!';
     titleCapacity.style.color = 'red';
