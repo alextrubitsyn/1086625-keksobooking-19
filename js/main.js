@@ -218,10 +218,19 @@ var searchValueSelected = function (element) {
   return element.options[selectedIndex].value;
 };
 
+var titleCapacity = adForm.querySelector('label[for="capacity"]');
+
 var checkValidityRooms = function (countRooms) {
   var indexGuestsSelected = guestsSelector.options.selectedIndex;
+  var returnLabelRooms = function () {
+    titleCapacity.innerText = titleCapacityText;
+    titleCapacity.style.color = '';
+  };
   if (countRooms < guestsSelector.options[indexGuestsSelected].value || countRooms === 100) {
-    roomsSelector.setCustomValidity('Такое количество комнат не соответствует допустимому количеству гостей, выберите количество гостей заново!');
+    var titleCapacityText = titleCapacity.innerText;
+    titleCapacity.innerText = 'Выберите заново!';
+    titleCapacity.style.color = 'red';
+    setTimeout(returnLabelRooms, 1000);
   }
 };
 
