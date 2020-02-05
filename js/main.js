@@ -224,10 +224,11 @@ var checkValidityRooms = function (countRooms) {
   var indexGuestsSelected = guestsSelector.options.selectedIndex;
   var returnLabelRooms = function () {
     titleCapacity.innerText = titleCapacityText;
-    titleCapacity.style.color = '';
+    titleCapacity.style.color = titleCapacityColor;
   };
   if (countRooms < guestsSelector.options[indexGuestsSelected].value && countRooms < 100) {
     var titleCapacityText = titleCapacity.innerText;
+    var titleCapacityColor = titleCapacity.style.color;
     titleCapacity.innerText = 'Выберите заново!';
     titleCapacity.style.color = 'red';
     setTimeout(returnLabelRooms, 1000);
