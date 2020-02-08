@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var renderPin = function (element) {
+  var render = function (element) {
     var nearbyPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
     var pinElement = nearbyPinTemplate.cloneNode(true);
     pinElement.style.cssText = 'left: ' + (element.location.x - window.data.PIN_OFFSET_X) + 'px; top: ' + (element.location.y - window.data.PIN_OFFSET_Y) + 'px;';
@@ -11,7 +11,7 @@
   };
 
   window.pin = {
-    renderPin: renderPin
+    render: render
   };
 
 })();
