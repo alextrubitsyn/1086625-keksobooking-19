@@ -17,6 +17,7 @@
   var MAX_COUNT_GUESTS = 3;
   var COUNT_PHOTOS = 3;
   var ENTER_KEY = 'Enter';
+  var ESC_KEY = 'Escape';
 
   var getArrayPhotos = function (countPhotos) {
     var elements = [];
@@ -65,26 +66,10 @@
   var offers = createOffers(NEARBY_ADS);
 
   window.data = {
-    // NEARBY_ADS: NEARBY_ADS,
-    // MIN_X: MIN_X,
-    // MAX_X: MAX_X,
-    // MIN_Y: MIN_Y,
-    // MAX_Y: MAX_Y,
-    // TYPES_RESIDENCE: TYPES_RESIDENCE,
-    // TYPES_RESIDENCE_TRANSLATE: TYPES_RESIDENCE_TRANSLATE,
-    // CONVENIENCES: CONVENIENCES,
-    // CONVENIENCES_TRANSLATE: CONVENIENCES_TRANSLATE,
-    // CHECK_TIMES: CHECK_TIMES,
-    // MIN_PRICE: MIN_PRICE,
-    // MAX_PRICE: MAX_PRICE,
-    // MIN_COUNT_ROOMS: MIN_COUNT_ROOMS,
-    // MAX_COUNT_ROOMS: MAX_COUNT_ROOMS,
     MIN_COUNT_GUESTS: MIN_COUNT_GUESTS,
     MAX_COUNT_GUESTS: MAX_COUNT_GUESTS,
-    // COUNT_PHOTOS: COUNT_PHOTOS,
-    // CAPACITY_ROOMS: CAPACITY_ROOMS,
+    ESC_KEY: ESC_KEY,
     ENTER_KEY: ENTER_KEY,
-    // VALIDITY_MESSAGES: VALIDITY_MESSAGES,
     createOffers: createOffers,
     offers: offers
   };

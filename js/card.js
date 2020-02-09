@@ -30,8 +30,10 @@
   };
 
 
-  var renderCard = function (element) {
+  var render = function (element) {
     var FEATURE_CLASS = 'popup__feature';
+    var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+    var cardElement = cardTemplate.cloneNode(true);
 
     cardElement.querySelector('.popup__avatar').src = element.author.avatar;
     cardElement.querySelector('.popup__title').textContent = element.offer.title;
@@ -74,10 +76,8 @@
     return cardElement;
   };
 
-  var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-
-  var cardElement = cardTemplate.cloneNode(true);
-  document.querySelector('.map__filters-container').before(renderCard(window.data.offers[0]));
-
+  window.card = {
+    render: render
+  };
 
 })();
