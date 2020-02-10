@@ -1,17 +1,39 @@
 'use strict';
 
 (function () {
+
+  var OFFSET_X = 25;
+  var OFFSET_Y = 70;
+
   var render = function (element) {
-    var nearbyPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-    var pinElement = nearbyPinTemplate.cloneNode(true);
-    pinElement.style.cssText = 'left: ' + (element.location.x - window.data.PIN_OFFSET_X) + 'px; top: ' + (element.location.y - window.data.PIN_OFFSET_Y) + 'px;';
-    pinElement.querySelector('img').src = element.author.avatar;
-    pinElement.querySelector('img').alt = element.offer.title;
+    if (element.offer) {
+      var nearbyPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+      var pinElement = nearbyPinTemplate.cloneNode(true);
+      pinElement.style.cssText = 'left: ' + (element.location.x - OFFSET_X) + 'px; top: ' + (element.location.y - OFFSET_Y) + 'px;';
+      pinElement.querySelector('img').src = element.author.avatar;
+      pinElement.querySelector('img').alt = element.offer.title;
+    }
     return pinElement;
   };
 
+  var makeBlock = function (elements) {
+    var fragment = document.createDocumentFragment();
+    var pinElement;
+    for (var i = 0; i < elements.length; i++) {
+      pinElement = render(elements[i]);
+      if (pinElement) {
+        fragment.appendChild(pinElement);
+      }
+    }
+    return fragment;
+  };
+
+
   window.pin = {
-    render: render
+    render: render,
+    makeBlock: makeBlock,
+    OFFSET_X: OFFSET_X,
+    OFFSET_Y: OFFSET_Y
   };
 
 })();

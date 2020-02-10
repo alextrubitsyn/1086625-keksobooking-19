@@ -2,6 +2,14 @@
 
 (function () {
 
+  var TYPES_RESIDENCE_TRANSLATE = {
+    'palace': 'Дворец', 'flat': 'Квартира', 'house': 'Дом', 'bungalo': 'Бунгало'
+  };
+  var CONVENIENCES_TRANSLATE = {
+    'wifi': 'Wi-Fi', 'dishwasher': 'кухня', 'parking': 'парковка', 'washer': 'стиралка', 'elevator': 'лифт', 'conditioner': 'кондиционер'
+  };
+
+
   var makePhraseRoomsGuests = function (countRooms, countGuests) {
     var wordRooms = ' комнаты';
     var wordGuests = ' гостей';
@@ -22,12 +30,16 @@
   };
 
 
-  var renderCard = function (element) {
+  var render = function (element) {
+    var FEATURE_CLASS = 'popup__feature';
+    var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+    var cardElement = cardTemplate.cloneNode(true);
+
     cardElement.querySelector('.popup__avatar').src = element.author.avatar;
     cardElement.querySelector('.popup__title').textContent = element.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = element.offer.address;
     cardElement.querySelector('.popup__text--price').childNodes[0].textContent = element.offer.price + '₽';
-    cardElement.querySelector('.popup__type').textContent = window.data.TYPES_RESIDENCE_TRANSLATE[element.offer.type];
+    cardElement.querySelector('.popup__type').textContent = TYPES_RESIDENCE_TRANSLATE[element.offer.type];
     cardElement.querySelector('.popup__text--capacity').textContent =
       makePhraseRoomsGuests(element.offer.rooms, element.offer.guests);
     cardElement.querySelector('.popup__text--time').textContent =
@@ -35,16 +47,16 @@
 
     // Заполнение блока features
     var feature = cardElement.querySelector('.popup__features');
+
     if (element.offer.features.length === 0) {
       feature.style.cssText = 'display: none;';
     } else {
-      for (var i = 1; i < feature.childNodes.length; i = i + 2) {
-        var featureName = feature.childNodes[i].className.split('--')[1];
-        if (!element.offer.features.includes(featureName)) {
-          feature.childNodes[i].style.cssText = 'display: none;';
-        } else {
-          feature.childNodes[i].textContent = window.data.CONVENIENCES_TRANSLATE[featureName];
-        }
+      feature.innerHTML = '';
+      for (var i = 0; i < element.offer.features.length; i++) {
+        var featureCard = document.createElement('li');
+        featureCard.classList.add(FEATURE_CLASS, FEATURE_CLASS + '--' + element.offer.features[i]);
+        featureCard.textContent = CONVENIENCES_TRANSLATE[element.offer.features[i]];
+        feature.appendChild(featureCard);
       }
     }
     // -----------------------------------------
@@ -53,21 +65,19 @@
     var cardPhoto = cardElement.querySelector('.popup__photo');
     if (element.offer.photos.length > 0) {
       cardPhoto.src = element.offer.photos[0];
-      for (i = 1; i < element.offer.photos.length; i++) {
+      for (var j = 1; j < element.offer.photos.length; j++) {
         var newPhoto = cardPhoto.cloneNode(true);
-        newPhoto.src = element.offer.photos[i];
+        newPhoto.src = element.offer.photos[j];
         cardPhoto.after(newPhoto);
       }
     } else {
-      cardPhoto.hidden = true;
+      cardPhoto.parentNode.hidden = true;
     }
     return cardElement;
   };
 
-  var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-
-  var cardElement = cardTemplate.cloneNode(true);
-  document.querySelector('.map__filters-container').before(renderCard(window.data.offers[0]));
-
+  window.card = {
+    render: render
+  };
 
 })();
