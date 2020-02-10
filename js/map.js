@@ -3,7 +3,11 @@
 
 (function () {
 
+  var MAIN_PIN_OFFSET_X = 32;
+  var MAIN_PIN_OFFSET_Y = 84;
+
   var pinList = document.querySelector('.map__pins');
+  var pinMain = pinList.querySelector('.map__pin--main');
 
   var erasePx = function (element) {
     return element.slice(0, -2);
@@ -86,7 +90,56 @@
     }
   };
 
+  var onPinMainMousedown = function (evtDown) {
+    evtDown.preventDefault();
+
+    var startPosition = {
+      x: evtDown.clientX,
+      y: evtDown.clientY
+    };
+
+    pinMain.style.zIndex = '2';
+
+    var onMouseMove = function (evtMove) {
+      evtMove.preventDefault();
+      eraseCard();
+
+      var shift = {
+        x: startPosition.x - evtMove.clientX,
+        y: startPosition.y - evtMove.clientY
+      };
+
+      startPosition = {
+        x: evtMove.clientX,
+        y: evtMove.clientY
+      };
+
+      var newPosition = {
+        x: pinMain.offsetLeft - shift.x,
+        y: pinMain.offsetTop - shift.y
+      };
+
+      var statusX = newPosition.x >= window.data.MIN_X - MAIN_PIN_OFFSET_X && newPosition.x <= window.data.MAX_X - MAIN_PIN_OFFSET_X;
+      var statusY = newPosition.y >= window.data.MIN_Y - MAIN_PIN_OFFSET_Y && newPosition.y <= window.data.MAX_Y - MAIN_PIN_OFFSET_Y;
+      if (statusX && statusY) {
+        pinMain.style.left = (newPosition.x) + 'px';
+        pinMain.style.top = (newPosition.y) + 'px';
+      }
+    };
+
+    var onMouseUp = function (evtUp) {
+      evtUp.preventDefault();
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      pinMain.style.zIndex = '';
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  };
+
   pinList.addEventListener('click', onPinClick);
   pinList.addEventListener('keydown', onPinKeydown);
+  pinMain.addEventListener('mousedown', onPinMainMousedown);
 
 })();
