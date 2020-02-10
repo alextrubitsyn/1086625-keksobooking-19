@@ -66,6 +66,10 @@
   var offers = createOffers(NEARBY_ADS);
 
   window.data = {
+    MIN_X: MIN_X,
+    MAX_X: MAX_X,
+    MIN_Y: MIN_Y,
+    MAX_Y: MAX_Y,
     MIN_COUNT_GUESTS: MIN_COUNT_GUESTS,
     MAX_COUNT_GUESTS: MAX_COUNT_GUESTS,
     ESC_KEY: ESC_KEY,

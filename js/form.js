@@ -73,7 +73,6 @@
     }
     makeBorder(priceInput, statusValidity);
     priceInput.setCustomValidity(messageValidity);
-    console.log(priceInput, statusValidity);
   };
 
   var onTitleChange = function () {
