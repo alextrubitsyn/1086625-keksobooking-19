@@ -3,6 +3,8 @@
 (function () {
 
   var PALAS_COUNT_ROOMS = 100;
+  var MIN_TITLE = 30;
+  var MAX_TITLE = 100;
   var VALIDITY_MESSAGES_GUESTS = {
     1: 'В 1 комнате возможно проживание только 1 гостя',
     2: 'В 2 комнатах возможно проживание 1 или 2 гостей',
@@ -24,6 +26,7 @@
   var priceInput = adForm.querySelector('#price');
   var timeInSelector = adForm.querySelector('#timein');
   var timeOutSelector = adForm.querySelector('#timeout');
+  var address = document.querySelector('#address');
 
 
   var searchValueSelected = function (element) {
@@ -31,16 +34,19 @@
     return element.options[selectedIndex].value;
   };
 
-  var checkValidityTitle = function () {
-    if (titleInput.validity.tooShort) {
+  var checkValidityTitle = function (title) {
+    if (title === 0) {
+      titleInput.setCustomValidity('Заполните это поле, оно обязательное');
+    } else if (title > 0 && title < MIN_TITLE) {
       titleInput.setCustomValidity('Заголовок должен состоять минимум из 30 символов');
-    } else if (titleInput.validity.tooLong) {
+    } else if (title > MAX_TITLE) {
       titleInput.setCustomValidity('Заголовок не должен превышать 100 символов');
-    } else if (titleInput.validity.valueMissing) {
-      titleInput.setCustomValidity('Обязательное поле');
     } else {
       titleInput.setCustomValidity('');
     }
+
+    makeBorder(titleInput, titleInput.value.length);
+    titleInput.reportValidity();
   };
 
   var makeBorder = function (element, status) {
@@ -75,15 +81,15 @@
     priceInput.setCustomValidity(messageValidity);
   };
 
-  var onTitleChange = function () {
-    checkValidityTitle();
+  var onTitleInput = function (evtTitle) {
+    checkValidityTitle(evtTitle.target.value);
   };
 
   var onTypeChange = function () {
     checkValidityPrice(priceInput.value);
   };
 
-  var onPriceChange = function (evtPrice) {
+  var onPriceInput = function (evtPrice) {
     checkValidityTitle(evtPrice.target.value);
   };
 
@@ -105,13 +111,24 @@
 
   var onFormSubmit = function (evt) {
     evt.preventDefault();
+
+  };
+
+  var onFormReset = function () {
+    checkValidityTitle(titleInput.defaultValue);
+    checkValidityPrice(priceInput.defaultValue);
+    checkValidityGuests();
+    var x = address.defaultValue.split(', ')[0];
+    var y = address.defaultValue.split(', ')[1];
+    window.map.putMainPin(x, y);
   };
 
   window.form = {
     onFormSubmit: onFormSubmit,
-    onTitleChange: onTitleChange,
+    onFormReset: onFormReset,
+    onTitleInput: onTitleInput,
     onTypeChange: onTypeChange,
-    onPriceChange: onPriceChange,
+    onPriceInput: onPriceInput,
     onRoomsChange: onRoomsChange,
     onGuestsChange: onGuestsChange,
     onTimeInChange: onTimeInChange,

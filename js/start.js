@@ -7,7 +7,7 @@
   var MAP_PIN_OFFSET_Y_ACTIVATION = 48;
   var nearbyPin = document.querySelector('.map__pins');
   var adForm = document.querySelector('.ad-form');
-  var mapPinMain = document.querySelector('.map__pin--main');
+  var pinMain = document.querySelector('.map__pin--main');
   var address = document.querySelector('#address');
   var titleInput = adForm.querySelector('#title');
   var typeSelector = adForm.querySelector('#type');
@@ -48,18 +48,19 @@
     changeDisabledElements(adFormElements, false);
     changeDisabledElements(mapElementsActivate, false);
     map.classList.remove('map--faded');
-    addressY += MAP_PIN_OFFSET_Y_ACTIVATION;
-    address.defaultValue = getAddressValue(addressX, addressY);
+    address.defaultValue = getAddressValue(DEFAULT_X, DEFAULT_Y);
     address.value = address.defaultValue;
     address.readOnly = true;
-    window.form.checkValidityTitle();
+    window.form.checkValidityTitle('');
     window.form.checkValidityPrice(0);
     window.form.checkValidityRoomsGuests();
-    mapPinMain.removeEventListener('mousedown', onPinMousedown);
-    mapPinMain.removeEventListener('keydown', onPinKeydown);
+    pinMain.removeEventListener('mousedown', onPinMousedown);
+    pinMain.removeEventListener('keydown', onPinKeydown);
     adForm.addEventListener('submit', window.form.onFormSubmit);
-    titleInput.addEventListener('invalid', window.form.onTitleChange);
-    priceInput.addEventListener('input', window.form.onPriceChange);
+    adForm.noValidate = true;
+    adForm.addEventListener('reset', window.form.onFormReset);
+    titleInput.addEventListener('input', window.form.onTitleInput);
+    priceInput.addEventListener('input', window.form.onPriceInput);
     typeSelector.addEventListener('change', window.form.onTypeChange);
     guestsSelector.addEventListener('change', window.form.onGuestsChange);
     roomsSelector.addEventListener('change', window.form.onRoomsChange);
@@ -71,11 +72,17 @@
   // Начальное неактивное состояние
   changeDisabledElements(adFormElements, true);
   changeDisabledElements(mapElementsActivate, true);
-  var addressX = Math.floor(+mapPinMain.style.left.split('px')[0] + MAP_PIN_OFFSET_X);
-  var addressY = Math.floor(+mapPinMain.style.top.split('px')[0] + MAP_PIN_OFFSET_Y_NOT_ACTIVE);
+  var addressX = Math.floor(+pinMain.style.left.split('px')[0] + MAP_PIN_OFFSET_X);
+  var addressY = Math.floor(+pinMain.style.top.split('px')[0] + MAP_PIN_OFFSET_Y_NOT_ACTIVE);
   address.value = getAddressValue(addressX, addressY);
-  mapPinMain.addEventListener('mousedown', onPinMousedown);
-  mapPinMain.addEventListener('keydown', onPinKeydown);
+  pinMain.addEventListener('mousedown', onPinMousedown);
+  pinMain.addEventListener('keydown', onPinKeydown);
+  var DEFAULT_X = addressX;
+  var DEFAULT_Y = addressY + MAP_PIN_OFFSET_Y_ACTIVATION;
   // -------------------------------
 
+  window.start = {
+    DEFAULT_X: DEFAULT_X,
+    DEFAULT_Y: DEFAULT_Y
+  };
 })();

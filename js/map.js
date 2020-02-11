@@ -8,6 +8,7 @@
 
   var pinList = document.querySelector('.map__pins');
   var pinMain = pinList.querySelector('.map__pin--main');
+  var address = document.querySelector('#address');
 
   var erasePx = function (element) {
     return element.slice(0, -2);
@@ -19,6 +20,12 @@
     if (cardArticle) {
       cardArticle.parentNode.removeChild(cardArticle);
     }
+  };
+
+  var putMainPin = function (x, y) {
+    pinMain.style.left = x + 'px';
+    pinMain.style.top = y + 'px';
+    address.value = (x + MAIN_PIN_OFFSET_X) + ', ' + (y + MAIN_PIN_OFFSET_Y);
   };
 
   var openCard = function (target) {
@@ -122,8 +129,7 @@
       var statusX = newPosition.x >= window.data.MIN_X - MAIN_PIN_OFFSET_X && newPosition.x <= window.data.MAX_X - MAIN_PIN_OFFSET_X;
       var statusY = newPosition.y >= window.data.MIN_Y - MAIN_PIN_OFFSET_Y && newPosition.y <= window.data.MAX_Y - MAIN_PIN_OFFSET_Y;
       if (statusX && statusY) {
-        pinMain.style.left = (newPosition.x) + 'px';
-        pinMain.style.top = (newPosition.y) + 'px';
+        putMainPin(newPosition.x, newPosition.y);
       }
     };
 
@@ -141,5 +147,10 @@
   pinList.addEventListener('click', onPinClick);
   pinList.addEventListener('keydown', onPinKeydown);
   pinMain.addEventListener('mousedown', onPinMainMousedown);
+
+
+  window.map = {
+    putMainPin: putMainPin
+  };
 
 })();
