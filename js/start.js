@@ -26,7 +26,6 @@
     }
   };
 
-
   var onPinMousedown = function (evt) {
     if (evt.button === 0) {
       activatePage();
@@ -66,7 +65,26 @@
     roomsSelector.addEventListener('change', window.form.onRoomsChange);
     timeInSelector.addEventListener('change', window.form.onTimeInChange);
     timeOutSelector.addEventListener('change', window.form.onTimeOutChange);
-    nearbyPin.appendChild(window.pin.makeBlock(window.data.offers));
+    nearbyPin.appendChild(window.pin.makeBlock(offers));
+  };
+
+  var offers;
+
+  var onSuccess = function (elements) {
+    offers = elements;
+    console.log(offers);
+  };
+
+
+  var onError = function (message) {
+    // message = 'Волшебники не загрузились! ' + message;
+    // var errorLoad = document.createElement('div');
+    // errorLoad.classList.add('error');
+    // errorLoad.style = 'left: 50%; transform: translateX(-50%); bottom: 0; position: absolute; display: inline-block; width: 500px; z-index: 300; color: red; padding: 30px; text-align: center; background-color: #ffffff;';
+    // errorLoad.fontSize = '30px';
+    // errorLoad.textContent = message;
+    // document.querySelector('header').insertAdjacentElement('beforeend', errorLoad);
+    // setTimeout(window.util.eraseError, window.variables.TIMEOUT_MESSAGE);
   };
 
   // Начальное неактивное состояние
@@ -79,10 +97,12 @@
   pinMain.addEventListener('keydown', onPinKeydown);
   var DEFAULT_X = addressX;
   var DEFAULT_Y = addressY + MAP_PIN_OFFSET_Y_ACTIVATION;
+  window.request.load(onSuccess, onError);
   // -------------------------------
 
   window.start = {
     DEFAULT_X: DEFAULT_X,
-    DEFAULT_Y: DEFAULT_Y
+    DEFAULT_Y: DEFAULT_Y,
+    offers: offers,
   };
 })();

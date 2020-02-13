@@ -44,13 +44,13 @@
     } else {
       titleInput.setCustomValidity('');
     }
-
-    makeBorder(titleInput, titleInput.value.length);
-    titleInput.reportValidity();
+    // console.log(titleInput, adForm.validity());
+    makeBorder(titleInput, !titleInput.reportValidity);
+    // titleInput.reportValidity();
   };
 
   var makeBorder = function (element, status) {
-    element.style.cssText = status ? '' : 'border: 1px solid red';
+    element.style.cssText = status ? '' : 'border: 3px solid red';
   };
 
   var checkValidityGuests = function () {

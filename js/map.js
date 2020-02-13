@@ -44,9 +44,9 @@
       }
       var addressX = +erasePx(target.style.left) + window.pin.OFFSET_X;
       var addressY = +erasePx(target.style.top) + window.pin.OFFSET_Y;
-      for (var i = 0; i < window.data.offers.length; i++) {
-        if (addressX === window.data.offers[i].location.x && addressY === window.data.offers[i].location.y) {
-          var offer = window.data.offers[i];
+      for (var i = 0; i < window.start.offers.length; i++) {
+        if (addressX === window.start.offers[i].location.x && addressY === window.start.offers[i].location.y) {
+          var offer = window.start.offers[i];
         }
       }
     }
