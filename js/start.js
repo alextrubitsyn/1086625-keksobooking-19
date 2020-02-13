@@ -19,6 +19,8 @@
   var map = document.querySelector('.map');
   var mapElementsActivate = map.querySelector('.map__filters').children;
   var adFormElements = adForm.children;
+  var fragmentCards = document.createDocumentFragment();
+  var pins;
 
   var changeDisabledElements = function (elements, disabledStatus) {
     for (var i = 0; i < elements.length; i++) {
@@ -65,26 +67,21 @@
     roomsSelector.addEventListener('change', window.form.onRoomsChange);
     timeInSelector.addEventListener('change', window.form.onTimeInChange);
     timeOutSelector.addEventListener('change', window.form.onTimeOutChange);
-    nearbyPin.appendChild(window.pin.makeBlock(offers));
+    nearbyPin.appendChild(pins);
   };
-
-  var offers;
 
   var onSuccess = function (elements) {
-    offers = elements;
-    console.log(offers);
+    pins = window.pin.makeBlock(elements);
+    var pinElement;
+    for (var i = 0; i < elements.length; i++) {
+      pinElement = window.card.render(elements[i]);
+      if (pinElement) {
+        fragmentCards.appendChild(pinElement);
+      }
+    }
   };
 
-
-  var onError = function (message) {
-    // message = 'Волшебники не загрузились! ' + message;
-    // var errorLoad = document.createElement('div');
-    // errorLoad.classList.add('error');
-    // errorLoad.style = 'left: 50%; transform: translateX(-50%); bottom: 0; position: absolute; display: inline-block; width: 500px; z-index: 300; color: red; padding: 30px; text-align: center; background-color: #ffffff;';
-    // errorLoad.fontSize = '30px';
-    // errorLoad.textContent = message;
-    // document.querySelector('header').insertAdjacentElement('beforeend', errorLoad);
-    // setTimeout(window.util.eraseError, window.variables.TIMEOUT_MESSAGE);
+  var onError = function () {
   };
 
   // Начальное неактивное состояние
@@ -103,6 +100,6 @@
   window.start = {
     DEFAULT_X: DEFAULT_X,
     DEFAULT_Y: DEFAULT_Y,
-    offers: offers,
+    fragmentCards: fragmentCards
   };
 })();
