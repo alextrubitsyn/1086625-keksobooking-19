@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var NEARBY_ADS = 8;
+  // var NEARBY_ADS = 8;
   var MIN_X = 1;
   var MAX_X = 1200;
   var MIN_Y = 130;
@@ -63,7 +63,7 @@
     return offers;
   };
 
-  var offers = createOffers(NEARBY_ADS);
+  // var offers = createOffers(NEARBY_ADS);
 
   window.data = {
     MIN_X: MIN_X,
@@ -74,8 +74,8 @@
     MAX_COUNT_GUESTS: MAX_COUNT_GUESTS,
     ESC_KEY: ESC_KEY,
     ENTER_KEY: ENTER_KEY,
-    createOffers: createOffers,
-    offers: offers
+    createOffers: createOffers
+    // offers: offers
   };
 
 })();

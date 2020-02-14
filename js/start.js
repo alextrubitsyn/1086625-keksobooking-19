@@ -7,7 +7,7 @@
   var MAP_PIN_OFFSET_Y_ACTIVATION = 48;
   var nearbyPin = document.querySelector('.map__pins');
   var adForm = document.querySelector('.ad-form');
-  var mapPinMain = document.querySelector('.map__pin--main');
+  var pinMain = document.querySelector('.map__pin--main');
   var address = document.querySelector('#address');
   var titleInput = adForm.querySelector('#title');
   var typeSelector = adForm.querySelector('#type');
@@ -19,13 +19,13 @@
   var map = document.querySelector('.map');
   var mapElementsActivate = map.querySelector('.map__filters').children;
   var adFormElements = adForm.children;
+  var fragmentCards = document.createDocumentFragment();
 
   var changeDisabledElements = function (elements, disabledStatus) {
     for (var i = 0; i < elements.length; i++) {
       elements[i].disabled = disabledStatus;
     }
   };
-
 
   var onPinMousedown = function (evt) {
     if (evt.button === 0) {
@@ -48,34 +48,56 @@
     changeDisabledElements(adFormElements, false);
     changeDisabledElements(mapElementsActivate, false);
     map.classList.remove('map--faded');
-    addressY += MAP_PIN_OFFSET_Y_ACTIVATION;
-    address.defaultValue = getAddressValue(addressX, addressY);
+    address.defaultValue = getAddressValue(defaultX, defaultY);
     address.value = address.defaultValue;
     address.readOnly = true;
     window.form.checkValidityTitle();
-    window.form.checkValidityPrice(0);
+    window.form.checkValidityPrice();
     window.form.checkValidityRoomsGuests();
-    mapPinMain.removeEventListener('mousedown', onPinMousedown);
-    mapPinMain.removeEventListener('keydown', onPinKeydown);
+    pinMain.removeEventListener('mousedown', onPinMousedown);
+    pinMain.removeEventListener('keydown', onPinKeydown);
     adForm.addEventListener('submit', window.form.onFormSubmit);
-    titleInput.addEventListener('invalid', window.form.onTitleChange);
-    priceInput.addEventListener('input', window.form.onPriceChange);
+    adForm.noValidate = true;
+    adForm.addEventListener('reset', window.form.onFormReset);
+    titleInput.addEventListener('input', window.form.onTitleInput);
+    priceInput.addEventListener('input', window.form.onPriceInput);
     typeSelector.addEventListener('change', window.form.onTypeChange);
     guestsSelector.addEventListener('change', window.form.onGuestsChange);
     roomsSelector.addEventListener('change', window.form.onRoomsChange);
     timeInSelector.addEventListener('change', window.form.onTimeInChange);
     timeOutSelector.addEventListener('change', window.form.onTimeOutChange);
-    nearbyPin.appendChild(window.pin.makeBlock(window.data.offers));
+    window.request.load(onSuccess, onError);
+  };
+
+  var onSuccess = function (elements) {
+    nearbyPin.appendChild(window.pin.makeBlock(elements));
+    var pinElement;
+    for (var i = 0; i < elements.length; i++) {
+      pinElement = window.card.render(elements[i]);
+      if (pinElement) {
+        fragmentCards.appendChild(pinElement);
+      }
+    }
+  };
+
+  var onError = function () {
   };
 
   // Начальное неактивное состояние
   changeDisabledElements(adFormElements, true);
   changeDisabledElements(mapElementsActivate, true);
-  var addressX = Math.floor(+mapPinMain.style.left.split('px')[0] + MAP_PIN_OFFSET_X);
-  var addressY = Math.floor(+mapPinMain.style.top.split('px')[0] + MAP_PIN_OFFSET_Y_NOT_ACTIVE);
+  var addressX = Math.floor(+pinMain.style.left.split('px')[0] + MAP_PIN_OFFSET_X);
+  var addressY = Math.floor(+pinMain.style.top.split('px')[0] + MAP_PIN_OFFSET_Y_NOT_ACTIVE);
   address.value = getAddressValue(addressX, addressY);
-  mapPinMain.addEventListener('mousedown', onPinMousedown);
-  mapPinMain.addEventListener('keydown', onPinKeydown);
+  pinMain.addEventListener('mousedown', onPinMousedown);
+  pinMain.addEventListener('keydown', onPinKeydown);
+  var defaultX = addressX;
+  var defaultY = addressY + MAP_PIN_OFFSET_Y_ACTIVATION;
   // -------------------------------
 
+  window.start = {
+    defaultX: defaultX,
+    defaultY: defaultY,
+    fragmentCards: fragmentCards
+  };
 })();

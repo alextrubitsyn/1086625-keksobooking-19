@@ -5,20 +5,22 @@
 
   var MAIN_PIN_OFFSET_X = 32;
   var MAIN_PIN_OFFSET_Y = 84;
-
+  var CORRECT_INDEX_PIN = 2;
   var pinList = document.querySelector('.map__pins');
   var pinMain = pinList.querySelector('.map__pin--main');
-
-  var erasePx = function (element) {
-    return element.slice(0, -2);
-  };
-
+  var address = document.querySelector('#address');
 
   var eraseCard = function () {
     var cardArticle = document.querySelector('.map__card');
     if (cardArticle) {
       cardArticle.parentNode.removeChild(cardArticle);
     }
+  };
+
+  var putMainPin = function (x, y) {
+    pinMain.style.left = x + 'px';
+    pinMain.style.top = y + 'px';
+    address.value = (x + MAIN_PIN_OFFSET_X) + ', ' + (y + MAIN_PIN_OFFSET_Y);
   };
 
   var openCard = function (target) {
@@ -35,13 +37,8 @@
       if (!target.className) {
         target = target.parentElement;
       }
-      var addressX = +erasePx(target.style.left) + window.pin.OFFSET_X;
-      var addressY = +erasePx(target.style.top) + window.pin.OFFSET_Y;
-      for (var i = 0; i < window.data.offers.length; i++) {
-        if (addressX === window.data.offers[i].location.x && addressY === window.data.offers[i].location.y) {
-          var offer = window.data.offers[i];
-        }
-      }
+      var index = Array.prototype.indexOf.call(target.parentNode.children, target);
+      var offer = window.start.fragmentCards.children[index - CORRECT_INDEX_PIN];
     }
 
     if (document.querySelector('.map__card')) {
@@ -49,7 +46,7 @@
     }
 
     if (offer) {
-      var card = window.card.render(offer);
+      var card = offer.cloneNode(true);
       document.querySelector('.map__filters-container').before(card);
     }
 
@@ -122,8 +119,7 @@
       var statusX = newPosition.x >= window.data.MIN_X - MAIN_PIN_OFFSET_X && newPosition.x <= window.data.MAX_X - MAIN_PIN_OFFSET_X;
       var statusY = newPosition.y >= window.data.MIN_Y - MAIN_PIN_OFFSET_Y && newPosition.y <= window.data.MAX_Y - MAIN_PIN_OFFSET_Y;
       if (statusX && statusY) {
-        pinMain.style.left = (newPosition.x) + 'px';
-        pinMain.style.top = (newPosition.y) + 'px';
+        putMainPin(newPosition.x, newPosition.y);
       }
     };
 
@@ -141,5 +137,10 @@
   pinList.addEventListener('click', onPinClick);
   pinList.addEventListener('keydown', onPinKeydown);
   pinMain.addEventListener('mousedown', onPinMainMousedown);
+
+
+  window.map = {
+    putMainPin: putMainPin
+  };
 
 })();

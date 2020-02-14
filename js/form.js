@@ -3,6 +3,8 @@
 (function () {
 
   var PALAS_COUNT_ROOMS = 100;
+  var MIN_TITLE = 30;
+  var MAX_TITLE = 100;
   var VALIDITY_MESSAGES_GUESTS = {
     1: 'В 1 комнате возможно проживание только 1 гостя',
     2: 'В 2 комнатах возможно проживание 1 или 2 гостей',
@@ -24,6 +26,7 @@
   var priceInput = adForm.querySelector('#price');
   var timeInSelector = adForm.querySelector('#timein');
   var timeOutSelector = adForm.querySelector('#timeout');
+  var address = document.querySelector('#address');
 
 
   var searchValueSelected = function (element) {
@@ -32,19 +35,20 @@
   };
 
   var checkValidityTitle = function () {
-    if (titleInput.validity.tooShort) {
+    var lengthTitle = titleInput.value.width;
+    if (lengthTitle === 0) {
+      titleInput.setCustomValidity('Заполните это поле, оно обязательное');
+    } else if (lengthTitle > 0 && lengthTitle < MIN_TITLE) {
       titleInput.setCustomValidity('Заголовок должен состоять минимум из 30 символов');
-    } else if (titleInput.validity.tooLong) {
+    } else if (lengthTitle > MAX_TITLE) {
       titleInput.setCustomValidity('Заголовок не должен превышать 100 символов');
-    } else if (titleInput.validity.valueMissing) {
-      titleInput.setCustomValidity('Обязательное поле');
     } else {
       titleInput.setCustomValidity('');
     }
   };
 
   var makeBorder = function (element, status) {
-    element.style.cssText = status ? '' : 'border: 1px solid red';
+    element.style.cssText = status ? '' : 'border: 3px solid red';
   };
 
   var checkValidityGuests = function () {
@@ -52,7 +56,6 @@
     var selectedGuests = +searchValueSelected(guestsSelector);
     var statusValidity = selectedGuests <= selectedRooms && selectedRooms <= window.data.MAX_COUNT_GUESTS && selectedGuests > 0 || selectedRooms === PALAS_COUNT_ROOMS && selectedGuests === window.data.MIN_COUNT_GUESTS;
     var messageValidity = statusValidity ? '' : VALIDITY_MESSAGES_GUESTS[selectedRooms] + '! Измените выбор количества гостей, или комнат!';
-    makeBorder(guestsSelector, statusValidity);
     guestsSelector.setCustomValidity(messageValidity);
   };
 
@@ -64,27 +67,27 @@
     timeOutSelector.selectedIndex = index;
   };
 
-  var checkValidityPrice = function (price) {
+  var checkValidityPrice = function () {
+    var price = priceInput.value ? priceInput.value : 0;
     var selectedType = searchValueSelected(typeSelector);
     var statusValidity = selectedType === 'bungalo' && price >= 0 || selectedType === 'flat' && price >= 1000 || selectedType === 'house' && price >= 5000 || selectedType === 'palace' && price >= 10000;
     var messageValidity = statusValidity ? '' : VALIDITY_MESSAGES_PRICE[selectedType] + '! Измените выбор жилья, или цену за ночь!';
     if (price > 1000000) {
       messageValidity = 'Максимальная цена - 1000000! Измените цену за ночь!';
     }
-    makeBorder(priceInput, statusValidity);
     priceInput.setCustomValidity(messageValidity);
   };
 
-  var onTitleChange = function () {
-    checkValidityTitle();
+  var onTitleInput = function () {
+    checkValidityPrice();
   };
 
   var onTypeChange = function () {
     checkValidityPrice(priceInput.value);
   };
 
-  var onPriceChange = function (evtPrice) {
-    checkValidityTitle(evtPrice.target.value);
+  var onPriceInput = function () {
+    checkValidityPrice();
   };
 
   var onRoomsChange = function () {
@@ -105,13 +108,40 @@
 
   var onFormSubmit = function (evt) {
     evt.preventDefault();
+    makeBorder(titleInput, titleInput.validity.valid);
+    makeBorder(guestsSelector, guestsSelector.validity.valid);
+    makeBorder(priceInput, priceInput.validity.valid);
+    if (!priceInput.value) {
+      priceInput.value = 0;
+      checkValidityPrice(0);
+    }
+    if (!titleInput.validity.valid) {
+      titleInput.reportValidity();
+    } else if (!priceInput.validity.valid) {
+      priceInput.reportValidity();
+    } else if (!guestsSelector.validity.valid) {
+      guestsSelector.reportValidity();
+    }
+  };
+
+  var onFormReset = function () {
+    checkValidityTitle(titleInput.defaultValue);
+    checkValidityPrice(priceInput.defaultValue);
+    checkValidityGuests();
+    makeBorder(titleInput, true);
+    makeBorder(guestsSelector, true);
+    makeBorder(priceInput, true);
+    var x = address.defaultValue.split(', ')[0];
+    var y = address.defaultValue.split(', ')[1];
+    window.map.putMainPin(x, y);
   };
 
   window.form = {
     onFormSubmit: onFormSubmit,
-    onTitleChange: onTitleChange,
+    onFormReset: onFormReset,
+    onTitleInput: onTitleInput,
     onTypeChange: onTypeChange,
-    onPriceChange: onPriceChange,
+    onPriceInput: onPriceInput,
     onRoomsChange: onRoomsChange,
     onGuestsChange: onGuestsChange,
     onTimeInChange: onTimeInChange,
