@@ -20,7 +20,6 @@
   var mapElementsActivate = map.querySelector('.map__filters').children;
   var adFormElements = adForm.children;
   var fragmentCards = document.createDocumentFragment();
-  var pins;
 
   var changeDisabledElements = function (elements, disabledStatus) {
     for (var i = 0; i < elements.length; i++) {
@@ -49,11 +48,11 @@
     changeDisabledElements(adFormElements, false);
     changeDisabledElements(mapElementsActivate, false);
     map.classList.remove('map--faded');
-    address.defaultValue = getAddressValue(DEFAULT_X, DEFAULT_Y);
+    address.defaultValue = getAddressValue(defaultX, defaultY);
     address.value = address.defaultValue;
     address.readOnly = true;
-    window.form.checkValidityTitle('');
-    window.form.checkValidityPrice(0);
+    window.form.checkValidityTitle();
+    window.form.checkValidityPrice();
     window.form.checkValidityRoomsGuests();
     pinMain.removeEventListener('mousedown', onPinMousedown);
     pinMain.removeEventListener('keydown', onPinKeydown);
@@ -67,11 +66,11 @@
     roomsSelector.addEventListener('change', window.form.onRoomsChange);
     timeInSelector.addEventListener('change', window.form.onTimeInChange);
     timeOutSelector.addEventListener('change', window.form.onTimeOutChange);
-    nearbyPin.appendChild(pins);
+    window.request.load(onSuccess, onError);
   };
 
   var onSuccess = function (elements) {
-    pins = window.pin.makeBlock(elements);
+    nearbyPin.appendChild(window.pin.makeBlock(elements));
     var pinElement;
     for (var i = 0; i < elements.length; i++) {
       pinElement = window.card.render(elements[i]);
@@ -92,14 +91,13 @@
   address.value = getAddressValue(addressX, addressY);
   pinMain.addEventListener('mousedown', onPinMousedown);
   pinMain.addEventListener('keydown', onPinKeydown);
-  var DEFAULT_X = addressX;
-  var DEFAULT_Y = addressY + MAP_PIN_OFFSET_Y_ACTIVATION;
-  window.request.load(onSuccess, onError);
+  var defaultX = addressX;
+  var defaultY = addressY + MAP_PIN_OFFSET_Y_ACTIVATION;
   // -------------------------------
 
   window.start = {
-    DEFAULT_X: DEFAULT_X,
-    DEFAULT_Y: DEFAULT_Y,
+    defaultX: defaultX,
+    defaultY: defaultY,
     fragmentCards: fragmentCards
   };
 })();

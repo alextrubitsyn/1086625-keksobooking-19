@@ -5,15 +5,10 @@
 
   var MAIN_PIN_OFFSET_X = 32;
   var MAIN_PIN_OFFSET_Y = 84;
-
+  var CORRECT_INDEX_PIN = 2;
   var pinList = document.querySelector('.map__pins');
   var pinMain = pinList.querySelector('.map__pin--main');
   var address = document.querySelector('#address');
-
-  // var erasePx = function (element) {
-  //   return element.slice(0, -2);
-  // };
-
 
   var eraseCard = function () {
     var cardArticle = document.querySelector('.map__card');
@@ -42,19 +37,8 @@
       if (!target.className) {
         target = target.parentElement;
       }
-      // console.log(target.children[0].src);
-      // console.log(window.start.fragmentCards.children[0].children[0].src);
-
-      // var addressX = +erasePx(target.style.left) + window.pin.OFFSET_X;
-      // var addressY = +erasePx(target.style.top) + window.pin.OFFSET_Y;
-      for (var i = 0; i < window.start.fragmentCards.children.length; i++) {
-        // if (addressX === window.start.offers[i].location.x && addressY === window.start.offers[i].location.y) {
-        if (target.children[0].src === window.start.fragmentCards.children[i].children[0].src) {
-          var offer = window.start.fragmentCards.children[i];
-          // console.log(offer);
-          // var offer = window.start.offers[i];
-        }
-      }
+      var index = Array.prototype.indexOf.call(target.parentNode.children, target);
+      var offer = window.start.fragmentCards.children[index - CORRECT_INDEX_PIN];
     }
 
     if (document.querySelector('.map__card')) {
@@ -63,7 +47,6 @@
 
     if (offer) {
       var card = offer.cloneNode(true);
-      // console.log(window.start.fragmentCards.children);
       document.querySelector('.map__filters-container').before(card);
     }
 
