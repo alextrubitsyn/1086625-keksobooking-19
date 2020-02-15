@@ -20,6 +20,7 @@
   var mapElementsActivate = map.querySelector('.map__filters').children;
   var adFormElements = adForm.children;
   var fragmentCards = document.createDocumentFragment();
+  var offers = [];
 
   var changeDisabledElements = function (elements, disabledStatus) {
     for (var i = 0; i < elements.length; i++) {
@@ -51,9 +52,6 @@
     address.defaultValue = getAddressValue(defaultX, defaultY);
     address.value = address.defaultValue;
     address.readOnly = true;
-    window.form.checkValidityTitle();
-    window.form.checkValidityPrice();
-    window.form.checkValidityRoomsGuests();
     pinMain.removeEventListener('mousedown', onPinMousedown);
     pinMain.removeEventListener('keydown', onPinKeydown);
     adForm.addEventListener('submit', window.form.onFormSubmit);
@@ -69,15 +67,10 @@
     window.request.load(onSuccess, onError);
   };
 
+
   var onSuccess = function (elements) {
+    window.start.offers = elements;
     nearbyPin.appendChild(window.pin.makeBlock(elements));
-    var pinElement;
-    for (var i = 0; i < elements.length; i++) {
-      pinElement = window.card.render(elements[i]);
-      if (pinElement) {
-        fragmentCards.appendChild(pinElement);
-      }
-    }
   };
 
   var onError = function () {
@@ -96,6 +89,7 @@
   // -------------------------------
 
   window.start = {
+    offers: offers,
     defaultX: defaultX,
     defaultY: defaultY,
     fragmentCards: fragmentCards

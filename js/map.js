@@ -37,8 +37,8 @@
       if (!target.className) {
         target = target.parentElement;
       }
-      var index = Array.prototype.indexOf.call(target.parentNode.children, target);
-      var offer = window.start.fragmentCards.children[index - CORRECT_INDEX_PIN];
+      var index = Array.prototype.indexOf.call(target.parentNode.children, target) - CORRECT_INDEX_PIN;
+      var offer = window.start.offers[index];
     }
 
     if (document.querySelector('.map__card')) {
@@ -46,7 +46,7 @@
     }
 
     if (offer) {
-      var card = offer.cloneNode(true);
+      var card = window.card.render(offer);
       document.querySelector('.map__filters-container').before(card);
     }
 

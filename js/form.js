@@ -35,15 +35,20 @@
   };
 
   var checkValidityTitle = function () {
-    var lengthTitle = titleInput.value.width;
+    var lengthTitle = titleInput.value.length;
     if (lengthTitle === 0) {
       titleInput.setCustomValidity('Заполните это поле, оно обязательное');
     } else if (lengthTitle > 0 && lengthTitle < MIN_TITLE) {
-      titleInput.setCustomValidity('Заголовок должен состоять минимум из 30 символов');
+      titleInput.setCustomValidity('Заголовок должен состоять минимум из 30 символов, сейчас ' + lengthTitle);
     } else if (lengthTitle > MAX_TITLE) {
       titleInput.setCustomValidity('Заголовок не должен превышать 100 символов');
     } else {
       titleInput.setCustomValidity('');
+    }
+    if (!titleInput.validity.valid) {
+      titleInput.reportValidity();
+    } else {
+      makeBorder(titleInput, true);
     }
   };
 
@@ -57,6 +62,11 @@
     var statusValidity = selectedGuests <= selectedRooms && selectedRooms <= window.data.MAX_COUNT_GUESTS && selectedGuests > 0 || selectedRooms === PALAS_COUNT_ROOMS && selectedGuests === window.data.MIN_COUNT_GUESTS;
     var messageValidity = statusValidity ? '' : VALIDITY_MESSAGES_GUESTS[selectedRooms] + '! Измените выбор количества гостей, или комнат!';
     guestsSelector.setCustomValidity(messageValidity);
+    if (!guestsSelector.validity.valid) {
+      guestsSelector.reportValidity();
+    } else {
+      makeBorder(guestsSelector, true);
+    }
   };
 
   var changeTimeIn = function (index) {
@@ -68,7 +78,7 @@
   };
 
   var checkValidityPrice = function () {
-    var price = priceInput.value ? priceInput.value : 0;
+    var price = +priceInput.value;
     var selectedType = searchValueSelected(typeSelector);
     var statusValidity = selectedType === 'bungalo' && price >= 0 || selectedType === 'flat' && price >= 1000 || selectedType === 'house' && price >= 5000 || selectedType === 'palace' && price >= 10000;
     var messageValidity = statusValidity ? '' : VALIDITY_MESSAGES_PRICE[selectedType] + '! Измените выбор жилья, или цену за ночь!';
@@ -76,14 +86,19 @@
       messageValidity = 'Максимальная цена - 1000000! Измените цену за ночь!';
     }
     priceInput.setCustomValidity(messageValidity);
+    if (!priceInput.validity.valid) {
+      priceInput.reportValidity();
+    } else {
+      makeBorder(priceInput, true);
+    }
   };
 
   var onTitleInput = function () {
-    checkValidityPrice();
+    checkValidityTitle();
   };
 
   var onTypeChange = function () {
-    checkValidityPrice(priceInput.value);
+    checkValidityPrice();
   };
 
   var onPriceInput = function () {
@@ -108,6 +123,9 @@
 
   var onFormSubmit = function (evt) {
     evt.preventDefault();
+    checkValidityTitle();
+    checkValidityPrice();
+    checkValidityGuests();
     makeBorder(titleInput, titleInput.validity.valid);
     makeBorder(guestsSelector, guestsSelector.validity.valid);
     makeBorder(priceInput, priceInput.validity.valid);
@@ -145,10 +163,10 @@
     onRoomsChange: onRoomsChange,
     onGuestsChange: onGuestsChange,
     onTimeInChange: onTimeInChange,
-    onTimeOutChange: onTimeOutChange,
-    checkValidityRoomsGuests: checkValidityGuests,
-    checkValidityPrice: checkValidityPrice,
-    checkValidityTitle: checkValidityTitle
+    onTimeOutChange: onTimeOutChange
+    // checkValidityRoomsGuests: checkValidityGuests,
+    // checkValidityPrice: checkValidityPrice,
+    // checkValidityTitle: checkValidityTitle
   };
 
 })();
