@@ -17,7 +17,9 @@
     'house': 'Минимальная цена за ночь для дома - 5 000',
     'palace': 'Минимальная цена за ночь для дворца - 10 000'
   };
-
+  var main = document.querySelector('main');
+  var map = document.querySelector('.map');
+  var pinMain = map.querySelector('.map__pin--main');
   var adForm = document.querySelector('.ad-form');
   var titleInput = adForm.querySelector('#title');
   var roomsSelector = adForm.querySelector('#room_number');
@@ -121,6 +123,92 @@
     changeTimeIn(evtOut.target.selectedIndex);
   };
 
+  var returnStartPage = function () {
+    window.util.eraseElement('.success');
+    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    for (var i = 0; i < pins.length; i++) {
+      pins[i].remove();
+    }
+    document.removeEventListener('keydown', onSuccessKeydown);
+    document.removeEventListener('click', onSuccessClick);
+    adForm.reset();
+    adForm.removeEventListener('submit', onFormSubmit);
+    adForm.removeEventListener('reset', onFormReset);
+    titleInput.removeEventListener('input', onTitleInput);
+    priceInput.removeEventListener('input', onPriceInput);
+    typeSelector.removeEventListener('change', onTypeChange);
+    guestsSelector.removeEventListener('change', onGuestsChange);
+    roomsSelector.removeEventListener('change', onRoomsChange);
+    timeInSelector.removeEventListener('change', onTimeInChange);
+    timeOutSelector.removeEventListener('change', onTimeOutChange);
+    window.start.disablePage();
+    adForm.classList.add('ad-form--disabled');
+    map.classList.add('map--faded');
+    pinMain.style.cssText = window.start.disabledPinMainStyle;
+  };
+
+  var onSuccessKeydown = function (evtCloseSuccess) {
+    if (evtCloseSuccess.key === window.data.ESC_KEY) {
+      returnStartPage();
+    }
+  };
+
+  var onSuccessClick = function () {
+    returnStartPage();
+  };
+
+  var onLoad = function (answer) {
+    if (answer) {
+      var successTemplate = document.querySelector('#success').content.querySelector('.success');
+      var successElement = successTemplate.cloneNode(true);
+      main.appendChild(successElement);
+      document.addEventListener('keydown', onSuccessKeydown);
+      document.addEventListener('click', onSuccessClick);
+    }
+  };
+
+  var cancelError = function () {
+    window.util.eraseElement('.error');
+    document.removeEventListener('keydown', onErrorKeydown);
+    document.removeEventListener('click', onErrorClick);
+    document.removeEventListener('keydown', onErrorButtonKeydown);
+    document.removeEventListener('click', onErrorButtonClick);
+  };
+
+  var onErrorKeydown = function (evtCloseError) {
+    if (evtCloseError.key === window.data.ESC_KEY) {
+      cancelError();
+    }
+  };
+
+  var onErrorClick = function () {
+    cancelError();
+  };
+
+  var onErrorButtonKeydown = function (evtCloseButtonError) {
+    if (evtCloseButtonError.key === window.data.ENTER) {
+      cancelError();
+    }
+  };
+
+  var onErrorButtonClick = function () {
+    cancelError();
+  };
+
+  var onError = function (message) {
+    if (message) {
+      var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+      var errorElement = errorTemplate.cloneNode(true);
+      main.appendChild(errorElement);
+      var errorClose = document.querySelector('.error__button');
+
+      errorClose.addEventListener('keydown', onErrorButtonKeydown);
+      errorClose.addEventListener('click', onErrorButtonClick);
+      document.addEventListener('keydown', onErrorKeydown);
+      document.addEventListener('click', onErrorClick);
+    }
+  };
+
   var onFormSubmit = function (evt) {
     evt.preventDefault();
     checkValidityTitle();
@@ -139,6 +227,8 @@
       priceInput.reportValidity();
     } else if (!guestsSelector.validity.valid) {
       guestsSelector.reportValidity();
+    } else {
+      window.request.save(new FormData(adForm), onLoad, onError);
     }
   };
 

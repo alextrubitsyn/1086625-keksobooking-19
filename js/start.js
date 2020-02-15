@@ -76,22 +76,27 @@
   var onError = function () {
   };
 
-  // Начальное неактивное состояние
-  changeDisabledElements(adFormElements, true);
-  changeDisabledElements(mapElementsActivate, true);
+  var disablePage = function () {
+    changeDisabledElements(adFormElements, true);
+    changeDisabledElements(mapElementsActivate, true);
+    address.value = getAddressValue(addressX, addressY);
+    pinMain.addEventListener('mousedown', onPinMousedown);
+    pinMain.addEventListener('keydown', onPinKeydown);
+  };
+
   var addressX = Math.floor(+pinMain.style.left.split('px')[0] + MAP_PIN_OFFSET_X);
   var addressY = Math.floor(+pinMain.style.top.split('px')[0] + MAP_PIN_OFFSET_Y_NOT_ACTIVE);
-  address.value = getAddressValue(addressX, addressY);
-  pinMain.addEventListener('mousedown', onPinMousedown);
-  pinMain.addEventListener('keydown', onPinKeydown);
   var defaultX = addressX;
   var defaultY = addressY + MAP_PIN_OFFSET_Y_ACTIVATION;
-  // -------------------------------
+  var disabledPinMainStyle = pinMain.style.cssText;
+  disablePage();
 
   window.start = {
     offers: offers,
     defaultX: defaultX,
     defaultY: defaultY,
-    fragmentCards: fragmentCards
+    disablePage: disablePage,
+    fragmentCards: fragmentCards,
+    disabledPinMainStyle: disabledPinMainStyle
   };
 })();
