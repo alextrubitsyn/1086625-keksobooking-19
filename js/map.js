@@ -39,33 +39,40 @@
     }
 
     if (offer) {
+      closeCard();
       var card = window.card.render(offer);
       filtersBlock.before(card);
       var mapCard = document.querySelector('.map__card');
     }
 
     var closeCard = function () {
-      cardClose.removeEventListener('click', onCloseClick);
-      cardClose.removeEventListener('keydown', onCloseKeydown);
-      document.removeEventListener('keydown', onEscapeKeydown);
       if (mapCard) {
         mapCard.remove();
       }
       target.classList.remove('map__pin--active');
     };
 
+    var closeListeners = function () {
+      cardClose.removeEventListener('click', onCloseClick);
+      cardClose.removeEventListener('keydown', onCloseKeydown);
+      document.removeEventListener('keydown', onEscapeKeydown);
+    };
+
     var onCloseClick = function () {
+      closeListeners();
       closeCard();
     };
 
     var onCloseKeydown = function (evtClose) {
       if (evtClose.key === window.data.ENTER_KEY) {
+        closeListeners();
         closeCard();
       }
     };
 
     var onEscapeKeydown = function (evtEscape) {
       if (evtEscape.key === window.data.ESC_KEY) {
+        closeListeners();
         closeCard();
       }
     };
