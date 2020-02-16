@@ -80,7 +80,6 @@
       errorElement.querySelector('.error__button').remove();
       errorElement.firstElementChild.textContent = 'Объявления с сервера не загрузились! ' + message;
       window.form.main.appendChild(errorElement);
-      // errorElement = window.form.main.querySelector('.error');
       setTimeout(function () {
         errorElement.remove();
       }, TIME_SHOW_ERROR);
