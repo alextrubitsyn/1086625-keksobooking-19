@@ -5,6 +5,12 @@
   var PALAS_COUNT_ROOMS = 100;
   var MIN_TITLE = 30;
   var MAX_TITLE = 100;
+  var MIN_PRICE_BUNGALO = 0;
+  var MIN_PRICE_FLAT = 1000;
+  var MIN_PRICE_HOUSE = 5000;
+  var MIN_PRICE_PALACE = 10000;
+  var MAX_PRICE = 1000000;
+
   var VALIDITY_MESSAGES_GUESTS = {
     1: 'В 1 комнате возможно проживание только 1 гостя',
     2: 'В 2 комнатах возможно проживание 1 или 2 гостей',
@@ -17,6 +23,12 @@
     'house': 'Минимальная цена за ночь для дома - 5 000',
     'palace': 'Минимальная цена за ночь для дворца - 10 000'
   };
+  var MIN_PRICE_TYPE = {
+    'bungalo': '0',
+    'flat': '1000',
+    'house': '5000',
+    'palace': '10000'
+  };
   var main = document.querySelector('main');
   var map = document.querySelector('.map');
   var pinMain = map.querySelector('.map__pin--main');
@@ -28,8 +40,8 @@
   var priceInput = adForm.querySelector('#price');
   var timeInSelector = adForm.querySelector('#timein');
   var timeOutSelector = adForm.querySelector('#timeout');
-  var address = document.querySelector('#address');
-
+  var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+  var successTemplate = document.querySelector('#success').content.querySelector('.success');
 
   var searchValueSelected = function (element) {
     var selectedIndex = element.options.selectedIndex;
@@ -82,10 +94,14 @@
   var checkValidityPrice = function () {
     var price = +priceInput.value;
     var selectedType = searchValueSelected(typeSelector);
-    var statusValidity = selectedType === 'bungalo' && price >= 0 || selectedType === 'flat' && price >= 1000 || selectedType === 'house' && price >= 5000 || selectedType === 'palace' && price >= 10000;
+    var statusBungalo = selectedType === 'bungalo' && price >= MIN_PRICE_BUNGALO;
+    var statusFlat = selectedType === 'flat' && price >= MIN_PRICE_FLAT;
+    var statusHouse = selectedType === 'house' && price >= MIN_PRICE_HOUSE;
+    var statusPalace = selectedType === 'palace' && price >= MIN_PRICE_PALACE;
+    var statusValidity = statusBungalo || statusFlat || statusHouse || statusPalace;
     var messageValidity = statusValidity ? '' : VALIDITY_MESSAGES_PRICE[selectedType] + '! Измените выбор жилья, или цену за ночь!';
-    if (price > 1000000) {
-      messageValidity = 'Максимальная цена - 1000000! Измените цену за ночь!';
+    if (price > MAX_PRICE) {
+      messageValidity = 'Максимальная цена - ' + MAX_PRICE + '! Измените цену за ночь!';
     }
     priceInput.setCustomValidity(messageValidity);
     if (!priceInput.validity.valid) {
@@ -99,7 +115,8 @@
     checkValidityTitle();
   };
 
-  var onTypeChange = function () {
+  var onTypeChange = function (evtType) {
+    priceInput.placeholder = MIN_PRICE_TYPE[searchValueSelected(evtType.target)];
     checkValidityPrice();
   };
 
@@ -124,7 +141,8 @@
   };
 
   var returnStartPage = function () {
-    window.util.eraseElement('.success');
+    var successElement = main.querySelector('.success');
+    successElement.remove();
     var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
     for (var i = 0; i < pins.length; i++) {
       pins[i].remove();
@@ -159,7 +177,6 @@
 
   var onLoad = function (answer) {
     if (answer) {
-      var successTemplate = document.querySelector('#success').content.querySelector('.success');
       var successElement = successTemplate.cloneNode(true);
       main.appendChild(successElement);
       document.addEventListener('keydown', onSuccessKeydown);
@@ -168,11 +185,13 @@
   };
 
   var cancelError = function () {
-    window.util.eraseElement('.error');
+    var errorElement = main.querySelector('.error');
+    var errorClose = errorElement.querySelector('.error__button');
     document.removeEventListener('keydown', onErrorKeydown);
     document.removeEventListener('click', onErrorClick);
-    document.removeEventListener('keydown', onErrorButtonKeydown);
-    document.removeEventListener('click', onErrorButtonClick);
+    errorClose.removeEventListener('keydown', onErrorButtonKeydown);
+    errorClose.removeEventListener('click', onErrorButtonClick);
+    errorElement.remove();
   };
 
   var onErrorKeydown = function (evtCloseError) {
@@ -197,7 +216,6 @@
 
   var onError = function (message) {
     if (message) {
-      var errorTemplate = document.querySelector('#error').content.querySelector('.error');
       var errorElement = errorTemplate.cloneNode(true);
       main.appendChild(errorElement);
       var errorClose = document.querySelector('.error__button');
@@ -233,15 +251,7 @@
   };
 
   var onFormReset = function () {
-    checkValidityTitle(titleInput.defaultValue);
-    checkValidityPrice(priceInput.defaultValue);
-    checkValidityGuests();
-    makeBorder(titleInput, true);
-    makeBorder(guestsSelector, true);
-    makeBorder(priceInput, true);
-    var x = address.defaultValue.split(', ')[0];
-    var y = address.defaultValue.split(', ')[1];
-    window.map.putMainPin(x, y);
+    returnStartPage();
   };
 
   window.form = {
@@ -253,10 +263,9 @@
     onRoomsChange: onRoomsChange,
     onGuestsChange: onGuestsChange,
     onTimeInChange: onTimeInChange,
+    errorTemplate: errorTemplate,
+    main: main,
     onTimeOutChange: onTimeOutChange
-    // checkValidityRoomsGuests: checkValidityGuests,
-    // checkValidityPrice: checkValidityPrice,
-    // checkValidityTitle: checkValidityTitle
   };
 
 })();

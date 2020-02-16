@@ -20,6 +20,7 @@
   var mapElementsActivate = map.querySelector('.map__filters').children;
   var adFormElements = adForm.children;
   var fragmentCards = document.createDocumentFragment();
+  var TIME_SHOW_ERROR = 3000;
   var offers = [];
 
   var changeDisabledElements = function (elements, disabledStatus) {
@@ -47,7 +48,6 @@
   var activatePage = function () {
     adForm.classList.remove('ad-form--disabled');
     changeDisabledElements(adFormElements, false);
-    changeDisabledElements(mapElementsActivate, false);
     map.classList.remove('map--faded');
     address.defaultValue = getAddressValue(defaultX, defaultY);
     address.value = address.defaultValue;
@@ -71,9 +71,21 @@
   var onSuccess = function (elements) {
     window.start.offers = elements;
     nearbyPin.appendChild(window.pin.makeBlock(elements));
+    changeDisabledElements(mapElementsActivate, false);
   };
 
-  var onError = function () {
+  var onError = function (message) {
+    if (message) {
+      var errorElement = window.form.errorTemplate.cloneNode(true);
+      errorElement.querySelector('.error__button').remove();
+      errorElement.firstElementChild.textContent = 'Объявления с сервера не загрузились! ' + message;
+      window.form.main.appendChild(errorElement);
+      // errorElement = window.form.main.querySelector('.error');
+      setTimeout(function () {
+        errorElement.remove();
+      }, TIME_SHOW_ERROR);
+    }
+
   };
 
   var disablePage = function () {

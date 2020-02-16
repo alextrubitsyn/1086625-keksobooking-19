@@ -20,17 +20,9 @@
     return currentElements;
   };
 
-  var eraseElement = function (element) {
-    var elementDOM = document.querySelector(element);
-    if (elementDOM) {
-      elementDOM.parentNode.removeChild(elementDOM);
-    }
-  };
-
   window.util = {
     getRandom: getRandom,
     getRandomRange: getRandomRange,
-    eraseElement: eraseElement,
     getRandomSelection: getRandomSelection
 
   };

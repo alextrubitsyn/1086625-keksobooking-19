@@ -6,11 +6,11 @@
   var MAX_X = 1200;
   var MIN_Y = 130;
   var MAX_Y = 630;
+  var MIN_PRICE = 0;
+  var MAX_PRICE = 1000000;
   var TYPES_RESIDENCE = ['palace', 'flat', 'house', 'bungalo'];
   var CONVENIENCES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var CHECK_TIMES = ['12:00', '13:00', '14:00'];
-  var MIN_PRICE = 1;
-  var MAX_PRICE = 1000000;
   var MIN_COUNT_ROOMS = 1;
   var MAX_COUNT_ROOMS = 3;
   var MIN_COUNT_GUESTS = 0;
@@ -63,8 +63,6 @@
     return offers;
   };
 
-  // var offers = createOffers(NEARBY_ADS);
-
   window.data = {
     MIN_X: MIN_X,
     MAX_X: MAX_X,
@@ -75,7 +73,6 @@
     ESC_KEY: ESC_KEY,
     ENTER_KEY: ENTER_KEY,
     createOffers: createOffers
-    // offers: offers
   };
 
 })();

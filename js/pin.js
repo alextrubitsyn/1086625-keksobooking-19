@@ -21,6 +21,7 @@
     var pinElement;
     for (var i = 0; i < elements.length; i++) {
       pinElement = render(elements[i]);
+      pinElement.dataset['index'] = i;
       if (pinElement) {
         fragment.appendChild(pinElement);
       }
