@@ -9,32 +9,28 @@
     'wifi': 'Wi-Fi', 'dishwasher': 'кухня', 'parking': 'парковка', 'washer': 'стиралка', 'elevator': 'лифт', 'conditioner': 'кондиционер'
   };
 
-
   var makePhraseRoomsGuests = function (countRooms, countGuests) {
     var wordRooms = ' комнаты';
     var wordGuests = ' гостей';
     if (countRooms === 1) {
       wordRooms = ' комната';
     }
-    if (countRooms > 4) {
+    if (countRooms > 4 || countRooms === 0) {
       wordRooms = ' комнат';
     }
     if (countGuests === 1) {
       wordGuests = ' гостя';
     }
-    if (countRooms === 100) {
+    if (countRooms === window.data.PALAS_COUNT_ROOMS) {
       wordRooms = ' комнат не';
       countGuests = '';
     }
     return countRooms + wordRooms + ' для ' + countGuests + wordGuests;
   };
 
-
   var render = function (element) {
     var FEATURE_CLASS = 'popup__feature';
-    var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-    var cardElement = cardTemplate.cloneNode(true);
-
+    var cardElement = window.data.cardTemplate.cloneNode(true);
     cardElement.querySelector('.popup__avatar').src = element.author.avatar;
     cardElement.querySelector('.popup__title').textContent = element.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = element.offer.address;

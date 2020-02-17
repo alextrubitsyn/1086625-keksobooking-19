@@ -5,52 +5,49 @@
 
   var MAIN_PIN_OFFSET_X = 32;
   var MAIN_PIN_OFFSET_Y = 84;
-  var pinList = document.querySelector('.map__pins');
-  var pinMain = pinList.querySelector('.map__pin--main');
-  var address = document.querySelector('#address');
-  var filtersBlock = document.querySelector('.map__filters-container');
   var CLASS_PIN = 'map__pin';
+  var CLASS_ACTIVE_PIN = 'map__pin--active';
   var CLASS_MAIN_PIN = 'map__pin--main';
+  var activePin;
+
 
   var putMainPin = function (x, y) {
-    pinMain.style.left = x + 'px';
-    pinMain.style.top = y + 'px';
-    address.value = (x + MAIN_PIN_OFFSET_X) + ', ' + (y + MAIN_PIN_OFFSET_Y);
+    window.data.pinMain.style.left = x + 'px';
+    window.data.pinMain.style.top = y + 'px';
+    window.data.address.value = (x + MAIN_PIN_OFFSET_X) + ', ' + (y + MAIN_PIN_OFFSET_Y);
   };
 
   var openCard = function (target) {
     var pinCheck = target.className === CLASS_PIN || target.parentNode.className === CLASS_PIN;
+    var pinActiveCheck = target.className === CLASS_ACTIVE_PIN || target.parentNode.className === CLASS_ACTIVE_PIN;
     var pinMainCheck = target.className === CLASS_MAIN_PIN || target.parentNode.className === CLASS_MAIN_PIN;
-    var activePin = pinList.querySelector('.map__pin--active');
 
-    if (pinCheck && !pinMainCheck) {
+    var closeCard = function () {
+      if (window.data.cardOffer) {
+        window.data.cardOffer.remove();
+      }
+      if (activePin) {
+        activePin.classList.remove(CLASS_ACTIVE_PIN);
+        activePin = '';
+      }
+    };
+
+    if (pinCheck && !pinMainCheck && !pinActiveCheck) {
       if (!target.className) {
         target = target.parentElement;
       }
       var offer = window.start.offers[target.dataset.index];
-      if (activePin) {
-        activePin.classList.remove('map__pin--active');
+      if (offer) {
+        if (activePin) {
+          closeCard();
+        }
+        target.classList.add(CLASS_ACTIVE_PIN);
+        activePin = target;
+        window.data.cardOffer = window.card.render(offer);
+        window.data.filtersBlock.before(window.data.cardOffer);
       }
-      target.classList.add('map__pin--active');
-    }
 
-    if (mapCard) {
-      mapCard.remove();
     }
-
-    if (offer) {
-      closeCard();
-      var card = window.card.render(offer);
-      filtersBlock.before(card);
-      var mapCard = document.querySelector('.map__card');
-    }
-
-    var closeCard = function () {
-      if (mapCard) {
-        mapCard.remove();
-      }
-      target.classList.remove('map__pin--active');
-    };
 
     var closeListeners = function () {
       cardClose.removeEventListener('click', onCloseClick);
@@ -86,16 +83,12 @@
   };
 
   var onPinClick = function (evtClick) {
-    if (evtClick.target.className === CLASS_PIN || evtClick.target.parentElement.className === CLASS_PIN) {
-      openCard(evtClick.target);
-    }
+    openCard(evtClick.target);
   };
 
   var onPinKeydown = function (evtKeydown) {
     if (evtKeydown.key === window.data.ENTER_KEY) {
-      if (evtKeydown.target.className === CLASS_PIN || evtKeydown.target.parentElement.className === CLASS_PIN) {
-        openCard(evtKeydown.target);
-      }
+      openCard(evtKeydown.target);
     }
   };
 
@@ -107,7 +100,7 @@
       y: evtDown.clientY
     };
 
-    pinMain.style.zIndex = '2';
+    window.data.pinMain.style.zIndex = '2';
 
     var onMouseMove = function (evtMove) {
       evtMove.preventDefault();
@@ -123,8 +116,8 @@
       };
 
       var newPosition = {
-        x: pinMain.offsetLeft - shift.x,
-        y: pinMain.offsetTop - shift.y
+        x: window.data.pinMain.offsetLeft - shift.x,
+        y: window.data.pinMain.offsetTop - shift.y
       };
 
       var statusX = newPosition.x >= window.data.MIN_X - MAIN_PIN_OFFSET_X && newPosition.x <= window.data.MAX_X - MAIN_PIN_OFFSET_X;
@@ -138,16 +131,16 @@
       evtUp.preventDefault();
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-      pinMain.style.zIndex = '';
+      window.data.pinMain.style.zIndex = '';
     };
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   };
 
-  pinList.addEventListener('click', onPinClick);
-  pinList.addEventListener('keydown', onPinKeydown);
-  pinMain.addEventListener('mousedown', onPinMainMousedown);
+  window.data.pinList.addEventListener('click', onPinClick);
+  window.data.pinList.addEventListener('keydown', onPinKeydown);
+  window.data.pinMain.addEventListener('mousedown', onPinMainMousedown);
 
 
   window.map = {

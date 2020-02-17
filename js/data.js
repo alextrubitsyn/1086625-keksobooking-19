@@ -1,78 +1,69 @@
 'use strict';
 
 (function () {
-  // var NEARBY_ADS = 8;
+  var main = document.querySelector('main');
+  var map = document.querySelector('.map');
+  var filtersBlock = document.querySelector('.map__filters-container');
+  var mapElementsActivate = filtersBlock.querySelector('.map__filters').children;
+  var nearbyPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+  var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+  var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+  var successTemplate = document.querySelector('#success').content.querySelector('.success');
+  var pinList = map.querySelector('.map__pins');
+  var pinMain = map.querySelector('.map__pin--main');
+  var adForm = document.querySelector('.ad-form');
+  var address = document.querySelector('#address');
+  var titleInput = adForm.querySelector('#title');
+  var typeSelector = adForm.querySelector('#type');
+  var roomsSelector = adForm.querySelector('#room_number');
+  var guestsSelector = adForm.querySelector('#capacity');
+  var timeInSelector = adForm.querySelector('#timein');
+  var timeOutSelector = adForm.querySelector('#timeout');
+  var priceInput = adForm.querySelector('#price');
+  var adFormElements = adForm.children;
   var MIN_X = 1;
   var MAX_X = 1200;
   var MIN_Y = 130;
   var MAX_Y = 630;
-  var MIN_PRICE = 0;
-  var MAX_PRICE = 1000000;
-  var TYPES_RESIDENCE = ['palace', 'flat', 'house', 'bungalo'];
-  var CONVENIENCES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-  var CHECK_TIMES = ['12:00', '13:00', '14:00'];
-  var MIN_COUNT_ROOMS = 1;
-  var MAX_COUNT_ROOMS = 3;
   var MIN_COUNT_GUESTS = 0;
   var MAX_COUNT_GUESTS = 3;
-  var COUNT_PHOTOS = 3;
+  var PALAS_COUNT_ROOMS = 100;
   var ENTER_KEY = 'Enter';
   var ESC_KEY = 'Escape';
+  var cardOffer;
 
-  var getArrayPhotos = function (countPhotos) {
-    var elements = [];
-    var countRamdomPhotos = window.util.getRandomRange(0, countPhotos);
-    for (var i = 0; i <= countRamdomPhotos; i++) {
-      elements[i] = 'http://o0.github.io/assets/images/tokyo/hotel' + (i + 1) + '.jpg';
-    }
-    return elements;
-  };
-
-  var createOffers = function (count) {
-    var offers = [];
-
-    for (var i = 0; i < count; i++) {
-      var timeChecking = window.util.getRandom(CHECK_TIMES);
-      var sequenceNumber = i + 1;
-      var currentX = window.util.getRandomRange(MIN_X, MAX_X);
-      var currentY = window.util.getRandomRange(MIN_Y, MAX_Y);
-
-      offers[i] = {
-        author: {
-          avatar: 'img/avatars/user0' + sequenceNumber + '.png'
-        },
-        offer: {
-          title: 'Заголовок ' + sequenceNumber,
-          address: currentX + ', ' + currentY,
-          price: window.util.getRandomRange(MIN_PRICE, MAX_PRICE + 1),
-          type: window.util.getRandom(TYPES_RESIDENCE),
-          rooms: window.util.getRandomRange(MIN_COUNT_ROOMS, MAX_COUNT_ROOMS + 1),
-          guests: window.util.getRandomRange(MIN_COUNT_GUESTS, MAX_COUNT_GUESTS + 1),
-          checkin: timeChecking,
-          checkout: timeChecking,
-          features: window.util.getRandomSelection(CONVENIENCES),
-          description: 'строка с описанием ' + sequenceNumber,
-          photos: getArrayPhotos(COUNT_PHOTOS)
-        },
-        location: {
-          x: currentX,
-          y: currentY
-        }
-      };
-    }
-    return offers;
-  };
 
   window.data = {
+    main: main,
+    map: map,
+    filtersBlock: filtersBlock,
+    mapElementsActivate: mapElementsActivate,
+    nearbyPinTemplate: nearbyPinTemplate,
+    cardTemplate: cardTemplate,
+    errorTemplate: errorTemplate,
+    successTemplate: successTemplate,
+    pinList: pinList,
+    pinMain: pinMain,
+    adForm: adForm,
+    address: address,
+    titleInput: titleInput,
+    typeSelector: typeSelector,
+    roomsSelector: roomsSelector,
+    guestsSelector: guestsSelector,
+    timeInSelector: timeInSelector,
+    timeOutSelector: timeOutSelector,
+    priceInput: priceInput,
+    adFormElements: adFormElements,
     MIN_X: MIN_X,
     MAX_X: MAX_X,
     MIN_Y: MIN_Y,
     MAX_Y: MAX_Y,
     MIN_COUNT_GUESTS: MIN_COUNT_GUESTS,
     MAX_COUNT_GUESTS: MAX_COUNT_GUESTS,
+    PALAS_COUNT_ROOMS: PALAS_COUNT_ROOMS,
     ESC_KEY: ESC_KEY,
     ENTER_KEY: ENTER_KEY,
-    createOffers: createOffers
+    cardOffer: cardOffer
   };
 
 })();
