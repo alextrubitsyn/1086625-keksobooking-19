@@ -7,8 +7,7 @@
 
   var render = function (element) {
     if (element.offer) {
-      var nearbyPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-      var pinElement = nearbyPinTemplate.cloneNode(true);
+      var pinElement = window.data.nearbyPinTemplate.cloneNode(true);
       pinElement.style.cssText = 'left: ' + (element.location.x - OFFSET_X) + 'px; top: ' + (element.location.y - OFFSET_Y) + 'px;';
       pinElement.querySelector('img').src = element.author.avatar;
       pinElement.querySelector('img').alt = element.offer.title;
@@ -21,6 +20,7 @@
     var pinElement;
     for (var i = 0; i < elements.length; i++) {
       pinElement = render(elements[i]);
+      pinElement.dataset['index'] = i;
       if (pinElement) {
         fragment.appendChild(pinElement);
       }
