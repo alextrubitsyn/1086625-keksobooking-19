@@ -33,26 +33,32 @@
     return element.options[selectedIndex].value;
   };
 
-  var checkValidityTitle = function () {
-    var lengthTitle = window.data.titleInput.value.length;
-    if (lengthTitle === 0) {
-      window.data.titleInput.setCustomValidity('Заполните это поле, оно обязательное');
-    } else if (lengthTitle > 0 && lengthTitle < MIN_TITLE) {
-      window.data.titleInput.setCustomValidity('Заголовок должен состоять минимум из 30 символов, сейчас ' + lengthTitle);
-    } else if (lengthTitle > MAX_TITLE) {
-      window.data.titleInput.setCustomValidity('Заголовок не должен превышать 100 символов');
+  var makeBorder = function (element, status) {
+    element.style.cssText = status ? '' : 'border: 3px solid red';
+  };
+
+  var showValidity = function (element, message) {
+    element.setCustomValidity(message);
+    if (!element.validity.valid) {
+      element.reportValidity();
     } else {
-      window.data.titleInput.setCustomValidity('');
-    }
-    if (!window.data.titleInput.validity.valid) {
-      window.data.titleInput.reportValidity();
-    } else {
-      makeBorder(window.data.titleInput, true);
+      makeBorder(element, true);
     }
   };
 
-  var makeBorder = function (element, status) {
-    element.style.cssText = status ? '' : 'border: 3px solid red';
+  var checkValidityTitle = function () {
+    var lengthTitle = window.data.titleInput.value.length;
+    var messageValidity = '';
+    if (lengthTitle === 0) {
+      messageValidity = 'Заполните это поле, оно обязательное';
+    } else if (lengthTitle > 0 && lengthTitle < MIN_TITLE) {
+      messageValidity = 'Заголовок должен состоять минимум из 30 символов, сейчас ' + lengthTitle;
+    } else if (lengthTitle > MAX_TITLE) {
+      messageValidity = 'Заголовок не должен превышать 100 символов';
+    } else {
+      messageValidity = '';
+    }
+    showValidity(window.data.titleInput, messageValidity);
   };
 
   var checkValidityGuests = function () {
@@ -60,12 +66,7 @@
     var selectedGuests = +searchValueSelected(window.data.guestsSelector);
     var statusValidity = selectedGuests <= selectedRooms && selectedRooms <= window.data.MAX_COUNT_GUESTS && selectedGuests > 0 || selectedRooms === window.data.PALAS_COUNT_ROOMS && selectedGuests === window.data.MIN_COUNT_GUESTS;
     var messageValidity = statusValidity ? '' : VALIDITY_MESSAGES_GUESTS[selectedRooms] + '! Измените выбор количества гостей, или комнат!';
-    window.data.guestsSelector.setCustomValidity(messageValidity);
-    if (!window.data.guestsSelector.validity.valid) {
-      window.data.guestsSelector.reportValidity();
-    } else {
-      makeBorder(window.data.guestsSelector, true);
-    }
+    showValidity(window.data.guestsSelector, messageValidity);
   };
 
   var changeTimeIn = function (index) {
@@ -79,21 +80,11 @@
   var checkValidityPrice = function () {
     var price = +window.data.priceInput.value;
     var selectedType = searchValueSelected(window.data.typeSelector);
-    var statusBungalo = selectedType === 'bungalo' && price >= MIN_PRICE_TYPE['bungalo'];
-    var statusFlat = selectedType === 'flat' && price >= MIN_PRICE_TYPE['flat'];
-    var statusHouse = selectedType === 'house' && price >= MIN_PRICE_TYPE['house'];
-    var statusPalace = selectedType === 'palace' && price >= MIN_PRICE_TYPE['palace'];
-    var statusValidity = statusBungalo || statusFlat || statusHouse || statusPalace[''];
-    var messageValidity = statusValidity ? '' : VALIDITY_MESSAGES_PRICE[selectedType] + '! Измените выбор жилья, или цену за ночь!';
+    var messageValidity = price >= MIN_PRICE_TYPE[selectedType] ? '' : VALIDITY_MESSAGES_PRICE[selectedType] + '! Измените выбор жилья, или цену за ночь!';
     if (price > MAX_PRICE) {
       messageValidity = 'Максимальная цена - ' + MAX_PRICE + '! Измените цену за ночь!';
     }
-    window.data.priceInput.setCustomValidity(messageValidity);
-    if (!window.data.priceInput.validity.valid) {
-      window.data.priceInput.reportValidity();
-    } else {
-      makeBorder(window.data.priceInput, true);
-    }
+    showValidity(window.data.priceInput, messageValidity);
   };
 
   var onTitleInput = function () {
@@ -135,6 +126,7 @@
       pins[i].remove();
     }
     if (window.data.cardOffer) {
+      window.data.closeListeners();
       window.data.cardOffer.remove();
     }
     document.removeEventListener('keydown', onSuccessKeydown);

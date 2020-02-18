@@ -32,6 +32,8 @@
   var ESC_KEY = 'Escape';
   var cardOffer;
 
+  var closeListeners = function () { };
+
 
   window.data = {
     main: main,
@@ -63,7 +65,8 @@
     PALAS_COUNT_ROOMS: PALAS_COUNT_ROOMS,
     ESC_KEY: ESC_KEY,
     ENTER_KEY: ENTER_KEY,
-    cardOffer: cardOffer
+    cardOffer: cardOffer,
+    closeListeners: closeListeners
   };
 
 })();

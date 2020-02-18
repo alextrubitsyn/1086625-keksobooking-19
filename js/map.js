@@ -49,27 +49,27 @@
 
     }
 
-    var closeListeners = function () {
+    window.data.closeListeners = function () {
       cardClose.removeEventListener('click', onCloseClick);
       cardClose.removeEventListener('keydown', onCloseKeydown);
       document.removeEventListener('keydown', onEscapeKeydown);
     };
 
     var onCloseClick = function () {
-      closeListeners();
+      window.data.closeListeners();
       closeCard();
     };
 
     var onCloseKeydown = function (evtClose) {
       if (evtClose.key === window.data.ENTER_KEY) {
-        closeListeners();
+        window.data.closeListeners();
         closeCard();
       }
     };
 
     var onEscapeKeydown = function (evtEscape) {
       if (evtEscape.key === window.data.ESC_KEY) {
-        closeListeners();
+        window.data.closeListeners();
         closeCard();
       }
     };
