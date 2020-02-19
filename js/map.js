@@ -36,7 +36,7 @@
       if (!target.className) {
         target = target.parentElement;
       }
-      var offer = window.start.offers[target.dataset.index];
+      var offer = window.data.updateOffers[target.dataset.index];
       if (offer) {
         if (activePin) {
           closeCard();

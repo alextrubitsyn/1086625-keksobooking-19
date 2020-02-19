@@ -28,11 +28,6 @@
   var errorElement;
   var errorClose;
 
-  var searchValueSelected = function (element) {
-    var selectedIndex = element.options.selectedIndex;
-    return element.options[selectedIndex].value;
-  };
-
   var makeBorder = function (element, status) {
     element.style.cssText = status ? '' : 'border: 3px solid red';
   };
@@ -62,8 +57,8 @@
   };
 
   var checkValidityGuests = function () {
-    var selectedRooms = +searchValueSelected(window.data.roomsSelector);
-    var selectedGuests = +searchValueSelected(window.data.guestsSelector);
+    var selectedRooms = +window.util.searchValueSelected(window.data.roomsSelector);
+    var selectedGuests = +window.util.searchValueSelected(window.data.guestsSelector);
     var statusValidity = selectedGuests <= selectedRooms && selectedRooms <= window.data.MAX_COUNT_GUESTS && selectedGuests > 0 || selectedRooms === window.data.PALAS_COUNT_ROOMS && selectedGuests === window.data.MIN_COUNT_GUESTS;
     var messageValidity = statusValidity ? '' : VALIDITY_MESSAGES_GUESTS[selectedRooms] + '! Измените выбор количества гостей, или комнат!';
     showValidity(window.data.guestsSelector, messageValidity);
@@ -79,7 +74,7 @@
 
   var checkValidityPrice = function () {
     var price = +window.data.priceInput.value;
-    var selectedType = searchValueSelected(window.data.typeSelector);
+    var selectedType = window.util.searchValueSelected(window.data.typeSelector);
     var messageValidity = price >= MIN_PRICE_TYPE[selectedType] ? '' : VALIDITY_MESSAGES_PRICE[selectedType] + '! Измените выбор жилья, или цену за ночь!';
     if (price > MAX_PRICE) {
       messageValidity = 'Максимальная цена - ' + MAX_PRICE + '! Измените цену за ночь!';
@@ -121,10 +116,7 @@
       successElement.remove();
       successElement = '';
     }
-    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var i = 0; i < pins.length; i++) {
-      pins[i].remove();
-    }
+    window.pin.erase();
     if (window.data.cardOffer) {
       window.data.closeListeners();
       window.data.cardOffer.remove();

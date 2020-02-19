@@ -7,7 +7,6 @@
   var MAP_PIN_OFFSET_Y_ACTIVATION = 48;
   var fragmentCards = document.createDocumentFragment();
   var TIME_SHOW_ERROR = 3000;
-  var offers = [];
 
   var changeDisabledElements = function (elements, disabledStatus) {
     for (var i = 0; i < elements.length; i++) {
@@ -55,9 +54,11 @@
 
 
   var onSuccess = function (elements) {
-    window.start.offers = elements;
-    window.data.pinList.appendChild(window.pin.makeBlock(elements));
-    changeDisabledElements(window.data.mapElementsActivate, false);
+    window.data.offers = elements;
+    window.data.updateOffers = elements;
+    changeDisabledElements(window.data.mapFilters.children, false);
+    window.filter.selectPins();
+    window.filter.start();
   };
 
   var onError = function (message) {
@@ -75,7 +76,7 @@
 
   var disablePage = function () {
     changeDisabledElements(window.data.adFormElements, true);
-    changeDisabledElements(window.data.mapElementsActivate, true);
+    changeDisabledElements(window.data.mapFilters.children, true);
     window.data.address.value = getAddressValue(addressX, addressY);
     window.data.pinMain.addEventListener('mousedown', onPinMousedown);
     window.data.pinMain.addEventListener('keydown', onPinKeydown);
@@ -89,7 +90,6 @@
   disablePage();
 
   window.start = {
-    offers: offers,
     defaultX: defaultX,
     defaultY: defaultY,
     disablePage: disablePage,

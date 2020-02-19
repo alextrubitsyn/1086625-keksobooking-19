@@ -20,10 +20,17 @@
     return currentElements;
   };
 
+  var searchValueSelected = function (element) {
+    var selectedIndex = element.options.selectedIndex;
+    return element.options[selectedIndex].value;
+  };
+
+
   window.util = {
     getRandom: getRandom,
     getRandomRange: getRandomRange,
-    getRandomSelection: getRandomSelection
+    getRandomSelection: getRandomSelection,
+    searchValueSelected: searchValueSelected
 
   };
 

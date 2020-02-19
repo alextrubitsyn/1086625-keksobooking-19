@@ -4,7 +4,11 @@
   var main = document.querySelector('main');
   var map = document.querySelector('.map');
   var filtersBlock = document.querySelector('.map__filters-container');
-  var mapElementsActivate = filtersBlock.querySelector('.map__filters').children;
+  var mapFilters = filtersBlock.querySelector('.map__filters');
+  var mapFilterType = mapFilters.querySelector('#housing-type');
+  var mapFilterPrice = mapFilters.querySelector('#housing-price');
+  var mapFilterRooms = mapFilters.querySelector('#housing-rooms');
+  var mapFilterGuests = mapFilters.querySelector('#housing-guests');
   var nearbyPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
   var errorTemplate = document.querySelector('#error').content.querySelector('.error');
@@ -30,6 +34,8 @@
   var PALAS_COUNT_ROOMS = 100;
   var ENTER_KEY = 'Enter';
   var ESC_KEY = 'Escape';
+  var offers;
+  var updateOffers;
   var cardOffer;
 
   var closeListeners = function () { };
@@ -38,8 +44,14 @@
   window.data = {
     main: main,
     map: map,
+    offers: offers,
+    updateOffers: updateOffers,
     filtersBlock: filtersBlock,
-    mapElementsActivate: mapElementsActivate,
+    mapFilters: mapFilters,
+    mapFilterType: mapFilterType,
+    mapFilterPrice: mapFilterPrice,
+    mapFilterRooms: mapFilterRooms,
+    mapFilterGuests: mapFilterGuests,
     nearbyPinTemplate: nearbyPinTemplate,
     cardTemplate: cardTemplate,
     errorTemplate: errorTemplate,
