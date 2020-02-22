@@ -4,11 +4,14 @@
 
   var OFFSET_X = 25;
   var OFFSET_Y = 70;
-  var MAX_PINS_ON_MAP = 5;
+  var MAX_COUNT = 5;
+
+  var nearbyPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+  var fragment = document.createDocumentFragment();
 
   var render = function (element) {
     if (element.offer) {
-      var pinElement = window.data.nearbyPinTemplate.cloneNode(true);
+      var pinElement = nearbyPinTemplate.cloneNode(true);
       pinElement.style.cssText = 'left: ' + (element.location.x - OFFSET_X) + 'px; top: ' + (element.location.y - OFFSET_Y) + 'px;';
       pinElement.querySelector('img').src = element.author.avatar;
       pinElement.querySelector('img').alt = element.offer.title;
@@ -17,8 +20,7 @@
   };
 
   var makeBlock = function (elements) {
-    var countElements = elements.length > MAX_PINS_ON_MAP ? countElements = MAX_PINS_ON_MAP : elements.length;
-    var fragment = document.createDocumentFragment();
+    var countElements = elements.length > MAX_COUNT ? countElements = MAX_COUNT : elements.length;
     var pinElement;
     for (var i = 0; i < countElements; i++) {
       pinElement = render(elements[i]);
@@ -38,11 +40,9 @@
   };
 
   window.pin = {
-    render: render,
     makeBlock: makeBlock,
     erase: erase,
-    OFFSET_X: OFFSET_X,
-    OFFSET_Y: OFFSET_Y
+    MAX_COUNT: MAX_COUNT,
   };
 
 })();
