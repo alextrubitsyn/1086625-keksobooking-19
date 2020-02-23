@@ -5,7 +5,9 @@
   var MIN_TITLE = 30;
   var MAX_TITLE = 100;
   var MAX_PRICE = 1000000;
-
+  var MIN_COUNT_GUESTS = 0;
+  var MAX_COUNT_GUESTS = 3;
+  var PALAS_COUNT_ROOMS = 100;
   var VALIDITY_MESSAGES_GUESTS = {
     1: 'В 1 комнате возможно проживание только 1 гостя',
     2: 'В 2 комнатах возможно проживание 1 или 2 гостей',
@@ -28,72 +30,91 @@
   var errorElement;
   var errorClose;
 
-  var searchValueSelected = function (element) {
-    var selectedIndex = element.options.selectedIndex;
-    return element.options[selectedIndex].value;
+  var main = document.querySelector('main');
+  var adForm = document.querySelector('.ad-form');
+  var titleInput = adForm.querySelector('#title');
+  var typeSelector = adForm.querySelector('#type');
+  var roomsSelector = adForm.querySelector('#room_number');
+  var guestsSelector = adForm.querySelector('#capacity');
+  var timeInSelector = adForm.querySelector('#timein');
+  var timeOutSelector = adForm.querySelector('#timeout');
+  var priceInput = adForm.querySelector('#price');
+  var successTemplate = document.querySelector('#success').content.querySelector('.success');
+  var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+  var adFormElements = adForm.children;
+
+  var activate = function () {
+    adForm.classList.remove('ad-form--disabled');
+    window.util.changeDisabledElements(adFormElements, false);
+    adForm.addEventListener('submit', onFormSubmit);
+    adForm.noValidate = true;
+    adForm.addEventListener('reset', onFormReset);
+    titleInput.addEventListener('input', onTitleInput);
+    priceInput.addEventListener('input', onPriceInput);
+    typeSelector.addEventListener('change', onTypeChange);
+    guestsSelector.addEventListener('change', onGuestsChange);
+    roomsSelector.addEventListener('change', onRoomsChange);
+    timeInSelector.addEventListener('change', onTimeInChange);
+    timeOutSelector.addEventListener('change', onTimeOutChange);
   };
 
-  var checkValidityTitle = function () {
-    var lengthTitle = window.data.titleInput.value.length;
-    if (lengthTitle === 0) {
-      window.data.titleInput.setCustomValidity('Заполните это поле, оно обязательное');
-    } else if (lengthTitle > 0 && lengthTitle < MIN_TITLE) {
-      window.data.titleInput.setCustomValidity('Заголовок должен состоять минимум из 30 символов, сейчас ' + lengthTitle);
-    } else if (lengthTitle > MAX_TITLE) {
-      window.data.titleInput.setCustomValidity('Заголовок не должен превышать 100 символов');
-    } else {
-      window.data.titleInput.setCustomValidity('');
-    }
-    if (!window.data.titleInput.validity.valid) {
-      window.data.titleInput.reportValidity();
-    } else {
-      makeBorder(window.data.titleInput, true);
-    }
+
+  var disactivate = function () {
+    window.util.changeDisabledElements(adFormElements, true);
   };
 
   var makeBorder = function (element, status) {
     element.style.cssText = status ? '' : 'border: 3px solid red';
   };
 
-  var checkValidityGuests = function () {
-    var selectedRooms = +searchValueSelected(window.data.roomsSelector);
-    var selectedGuests = +searchValueSelected(window.data.guestsSelector);
-    var statusValidity = selectedGuests <= selectedRooms && selectedRooms <= window.data.MAX_COUNT_GUESTS && selectedGuests > 0 || selectedRooms === window.data.PALAS_COUNT_ROOMS && selectedGuests === window.data.MIN_COUNT_GUESTS;
-    var messageValidity = statusValidity ? '' : VALIDITY_MESSAGES_GUESTS[selectedRooms] + '! Измените выбор количества гостей, или комнат!';
-    window.data.guestsSelector.setCustomValidity(messageValidity);
-    if (!window.data.guestsSelector.validity.valid) {
-      window.data.guestsSelector.reportValidity();
+  var showValidity = function (element, message) {
+    element.setCustomValidity(message);
+    if (!element.validity.valid) {
+      element.reportValidity();
     } else {
-      makeBorder(window.data.guestsSelector, true);
+      makeBorder(element, true);
     }
+  };
+
+  var checkValidityTitle = function () {
+    var lengthTitle = titleInput.value.length;
+    var messageValidity = '';
+    if (lengthTitle === 0) {
+      messageValidity = 'Заполните это поле, оно обязательное';
+    } else if (lengthTitle > 0 && lengthTitle < MIN_TITLE) {
+      messageValidity = 'Заголовок должен состоять минимум из 30 символов, сейчас ' + lengthTitle;
+    } else if (lengthTitle > MAX_TITLE) {
+      messageValidity = 'Заголовок не должен превышать 100 символов';
+    } else {
+      messageValidity = '';
+    }
+    showValidity(titleInput, messageValidity);
+  };
+
+  var checkValidityGuests = function () {
+    var selectedRooms = +window.util.searchValueSelected(roomsSelector);
+    var selectedGuests = +window.util.searchValueSelected(guestsSelector);
+    var statusValidity = selectedGuests <= selectedRooms && selectedRooms <= MAX_COUNT_GUESTS && selectedGuests > 0 || selectedRooms === PALAS_COUNT_ROOMS && selectedGuests === MIN_COUNT_GUESTS;
+    var messageValidity = statusValidity ? '' : VALIDITY_MESSAGES_GUESTS[selectedRooms] + '! Измените выбор количества гостей, или комнат!';
+    showValidity(guestsSelector, messageValidity);
   };
 
   var changeTimeIn = function (index) {
-    window.data.timeInSelector.selectedIndex = index;
+    timeInSelector.selectedIndex = index;
   };
 
   var changeTimeOut = function (index) {
-    window.data.timeOutSelector.selectedIndex = index;
+    timeOutSelector.selectedIndex = index;
   };
 
   var checkValidityPrice = function () {
-    var price = +window.data.priceInput.value;
-    var selectedType = searchValueSelected(window.data.typeSelector);
-    var statusBungalo = selectedType === 'bungalo' && price >= MIN_PRICE_TYPE['bungalo'];
-    var statusFlat = selectedType === 'flat' && price >= MIN_PRICE_TYPE['flat'];
-    var statusHouse = selectedType === 'house' && price >= MIN_PRICE_TYPE['house'];
-    var statusPalace = selectedType === 'palace' && price >= MIN_PRICE_TYPE['palace'];
-    var statusValidity = statusBungalo || statusFlat || statusHouse || statusPalace[''];
-    var messageValidity = statusValidity ? '' : VALIDITY_MESSAGES_PRICE[selectedType] + '! Измените выбор жилья, или цену за ночь!';
+    var price = +priceInput.value;
+    var selectedType = window.util.searchValueSelected(typeSelector);
+    var messageValidity = price >= MIN_PRICE_TYPE[selectedType] ? '' : VALIDITY_MESSAGES_PRICE[selectedType] + '! Измените выбор жилья, или цену за ночь!';
     if (price > MAX_PRICE) {
       messageValidity = 'Максимальная цена - ' + MAX_PRICE + '! Измените цену за ночь!';
     }
-    window.data.priceInput.setCustomValidity(messageValidity);
-    if (!window.data.priceInput.validity.valid) {
-      window.data.priceInput.reportValidity();
-    } else {
-      makeBorder(window.data.priceInput, true);
-    }
+    showValidity(priceInput, messageValidity);
   };
 
   var onTitleInput = function () {
@@ -101,7 +122,7 @@
   };
 
   var onTypeChange = function (evtType) {
-    window.data.priceInput.placeholder = MIN_PRICE_TYPE[evtType.target.value];
+    priceInput.placeholder = MIN_PRICE_TYPE[evtType.target.value];
     checkValidityPrice();
   };
 
@@ -130,29 +151,23 @@
       successElement.remove();
       successElement = '';
     }
-    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var i = 0; i < pins.length; i++) {
-      pins[i].remove();
-    }
-    if (window.data.cardOffer) {
-      window.data.cardOffer.remove();
-    }
+    window.card.close();
+    window.pin.erase();
     document.removeEventListener('keydown', onSuccessKeydown);
     document.removeEventListener('click', onSuccessClick);
-    window.data.adForm.reset();
-    window.data.adForm.removeEventListener('submit', onFormSubmit);
-    window.data.adForm.removeEventListener('reset', onFormReset);
-    window.data.titleInput.removeEventListener('input', onTitleInput);
-    window.data.priceInput.removeEventListener('input', onPriceInput);
-    window.data.typeSelector.removeEventListener('change', onTypeChange);
-    window.data.guestsSelector.removeEventListener('change', onGuestsChange);
-    window.data.roomsSelector.removeEventListener('change', onRoomsChange);
-    window.data.timeInSelector.removeEventListener('change', onTimeInChange);
-    window.data.timeOutSelector.removeEventListener('change', onTimeOutChange);
-    window.start.disablePage();
-    window.data.adForm.classList.add('ad-form--disabled');
-    window.data.map.classList.add('map--faded');
-    window.data.pinMain.style.cssText = window.start.disabledPinMainStyle;
+    adForm.reset();
+    adForm.removeEventListener('submit', onFormSubmit);
+    adForm.removeEventListener('reset', onFormReset);
+    titleInput.removeEventListener('input', onTitleInput);
+    priceInput.removeEventListener('input', onPriceInput);
+    typeSelector.removeEventListener('change', onTypeChange);
+    guestsSelector.removeEventListener('change', onGuestsChange);
+    roomsSelector.removeEventListener('change', onRoomsChange);
+    timeInSelector.removeEventListener('change', onTimeInChange);
+    timeOutSelector.removeEventListener('change', onTimeOutChange);
+    window.map.disactivate();
+    disactivate();
+    adForm.classList.add('ad-form--disabled');
   };
 
   var onSuccessKeydown = function (evtCloseSuccess) {
@@ -170,8 +185,8 @@
 
   var onLoad = function (answer) {
     if (answer) {
-      successElement = window.data.successTemplate.cloneNode(true);
-      window.data.main.appendChild(successElement);
+      successElement = successTemplate.cloneNode(true);
+      main.appendChild(successElement);
       document.addEventListener('keydown', onSuccessKeydown);
       document.addEventListener('click', onSuccessClick);
     }
@@ -212,8 +227,8 @@
 
   var onError = function (message) {
     if (message) {
-      errorElement = window.data.errorTemplate.cloneNode(true);
-      window.data.main.appendChild(errorElement);
+      errorElement = errorTemplate.cloneNode(true);
+      main.appendChild(errorElement);
       errorClose = errorElement.querySelector('.error__button');
       errorClose.addEventListener('keydown', onErrorButtonKeydown);
       errorClose.addEventListener('click', onErrorButtonClick);
@@ -227,21 +242,21 @@
     checkValidityTitle();
     checkValidityPrice();
     checkValidityGuests();
-    makeBorder(window.data.titleInput, window.data.titleInput.validity.valid);
-    makeBorder(window.data.guestsSelector, window.data.guestsSelector.validity.valid);
-    makeBorder(window.data.priceInput, window.data.priceInput.validity.valid);
-    if (!window.data.priceInput.value) {
-      window.data.priceInput.value = 0;
+    makeBorder(titleInput, titleInput.validity.valid);
+    makeBorder(guestsSelector, guestsSelector.validity.valid);
+    makeBorder(priceInput, priceInput.validity.valid);
+    if (!priceInput.value) {
+      priceInput.value = 0;
       checkValidityPrice(0);
     }
-    if (!window.data.titleInput.validity.valid) {
-      window.data.titleInput.reportValidity();
-    } else if (!window.data.priceInput.validity.valid) {
-      window.data.priceInput.reportValidity();
-    } else if (!window.data.guestsSelector.validity.valid) {
-      window.data.guestsSelector.reportValidity();
+    if (!titleInput.validity.valid) {
+      titleInput.reportValidity();
+    } else if (!priceInput.validity.valid) {
+      priceInput.reportValidity();
+    } else if (!guestsSelector.validity.valid) {
+      guestsSelector.reportValidity();
     } else {
-      window.request.save(new FormData(window.data.adForm), onLoad, onError);
+      window.request.save(new FormData(adForm), onLoad, onError);
     }
   };
 
@@ -250,15 +265,8 @@
   };
 
   window.form = {
-    onFormSubmit: onFormSubmit,
-    onFormReset: onFormReset,
-    onTitleInput: onTitleInput,
-    onTypeChange: onTypeChange,
-    onPriceInput: onPriceInput,
-    onRoomsChange: onRoomsChange,
-    onGuestsChange: onGuestsChange,
-    onTimeInChange: onTimeInChange,
-    onTimeOutChange: onTimeOutChange
+    activate: activate,
+    disactivate: disactivate
   };
 
 })();

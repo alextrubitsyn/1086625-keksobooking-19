@@ -21,7 +21,6 @@
     return errors[cod] || errors['default'];
   };
 
-
   var setRequestHandlers = function (xhr, onLoad, onError) {
     xhr.timeout = TIMEOUT;
 

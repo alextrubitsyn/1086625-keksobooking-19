@@ -20,11 +20,24 @@
     return currentElements;
   };
 
+  var searchValueSelected = function (element) {
+    var selectedIndex = element.options.selectedIndex;
+    return element.options[selectedIndex].value;
+  };
+
+  var changeDisabledElements = function (elements, disabledStatus) {
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].disabled = disabledStatus;
+    }
+  };
+
+
   window.util = {
     getRandom: getRandom,
     getRandomRange: getRandomRange,
-    getRandomSelection: getRandomSelection
-
+    getRandomSelection: getRandomSelection,
+    searchValueSelected: searchValueSelected,
+    changeDisabledElements: changeDisabledElements
   };
 
 })();

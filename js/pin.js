@@ -4,10 +4,14 @@
 
   var OFFSET_X = 25;
   var OFFSET_Y = 70;
+  var MAX_COUNT = 5;
+
+  var nearbyPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+  var fragment = document.createDocumentFragment();
 
   var render = function (element) {
     if (element.offer) {
-      var pinElement = window.data.nearbyPinTemplate.cloneNode(true);
+      var pinElement = nearbyPinTemplate.cloneNode(true);
       pinElement.style.cssText = 'left: ' + (element.location.x - OFFSET_X) + 'px; top: ' + (element.location.y - OFFSET_Y) + 'px;';
       pinElement.querySelector('img').src = element.author.avatar;
       pinElement.querySelector('img').alt = element.offer.title;
@@ -16,9 +20,9 @@
   };
 
   var makeBlock = function (elements) {
-    var fragment = document.createDocumentFragment();
+    var countElements = elements.length > MAX_COUNT ? countElements = MAX_COUNT : elements.length;
     var pinElement;
-    for (var i = 0; i < elements.length; i++) {
+    for (var i = 0; i < countElements; i++) {
       pinElement = render(elements[i]);
       pinElement.dataset['index'] = i;
       if (pinElement) {
@@ -28,12 +32,17 @@
     return fragment;
   };
 
+  var erase = function () {
+    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    for (var i = 0; i < pins.length; i++) {
+      pins[i].remove();
+    }
+  };
 
   window.pin = {
-    render: render,
     makeBlock: makeBlock,
-    OFFSET_X: OFFSET_X,
-    OFFSET_Y: OFFSET_Y
+    erase: erase,
+    MAX_COUNT: MAX_COUNT,
   };
 
 })();
