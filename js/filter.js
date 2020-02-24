@@ -12,7 +12,7 @@
 
   var selectPins = function () {
     var type = window.util.searchValueSelected(mapFilterType);
-    if (offers) {
+    if (offers.length > 0) {
       actualOffers = [];
       for (var i = 0; i < offers.length; i++) {
         if (offers[i].offer.type === type || type === 'any') {
