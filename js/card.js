@@ -136,12 +136,10 @@
         activePin = target;
         cardOffer = render(offer);
         filtersBlock.before(cardOffer);
-        if (document.querySelector('.popup__close')) {
-          cardClose = document.querySelector('.popup__close');
-          cardClose.addEventListener('click', onCloseClick);
-          cardClose.addEventListener('keydown', onCloseKeydown);
-          document.addEventListener('keydown', onEscapeKeydown);
-        }
+        cardClose = document.querySelector('.popup__close');
+        cardClose.addEventListener('click', onCloseClick);
+        cardClose.addEventListener('keydown', onCloseKeydown);
+        document.addEventListener('keydown', onEscapeKeydown);
       }
     }
   };
