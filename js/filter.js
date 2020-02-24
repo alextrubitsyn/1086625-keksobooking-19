@@ -75,25 +75,25 @@
   };
 
 
-  var onTypeChange = function () {
-    window.debounce(selectPins)();
-  };
+  var onTypeChange = window.debounce(function () {
+    selectPins();
+  });
 
-  var onPriceChange = function () {
-    window.debounce(selectPins)();
-  };
+  var onPriceChange = window.debounce(function () {
+    selectPins();
+  });
 
-  var onRoomsChange = function () {
-    window.debounce(selectPins)();
-  };
+  var onRoomsChange = window.debounce(function () {
+    selectPins();
+  });
 
-  var onGuestsChange = function () {
-    window.debounce(selectPins)();
-  };
+  var onGuestsChange = window.debounce(function () {
+    selectPins();
+  });
 
-  var onFeaturesChange = function () {
-    window.debounce(selectPins)();
-  };
+  var onFeaturesChange = window.debounce(function () {
+    selectPins();
+  });
 
   var activate = function () {
     window.util.changeDisabledElements(mapFilters.children, false);
