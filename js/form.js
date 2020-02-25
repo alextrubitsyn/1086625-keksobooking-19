@@ -56,11 +56,13 @@
     roomsSelector.addEventListener('change', onRoomsChange);
     timeInSelector.addEventListener('change', onTimeInChange);
     timeOutSelector.addEventListener('change', onTimeOutChange);
+    window.photos.activate();
   };
 
 
   var disactivate = function () {
     window.util.changeDisabledElements(adFormElements, true);
+    window.photos.disactivate();
   };
 
   var makeBorder = function (element, status) {
