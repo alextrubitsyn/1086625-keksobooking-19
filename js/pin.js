@@ -12,9 +12,10 @@
   var render = function (element) {
     if (element.offer) {
       var pinElement = nearbyPinTemplate.cloneNode(true);
+      var pinElementImg = pinElement.querySelector('img');
       pinElement.style.cssText = 'left: ' + (element.location.x - OFFSET_X) + 'px; top: ' + (element.location.y - OFFSET_Y) + 'px;';
-      pinElement.querySelector('img').src = element.author.avatar;
-      pinElement.querySelector('img').alt = element.offer.title;
+      pinElementImg.src = element.author.avatar;
+      pinElementImg.alt = element.offer.title;
     }
     return pinElement;
   };
