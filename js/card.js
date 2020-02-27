@@ -149,10 +149,8 @@
         cardOffer = render(offer);
         filtersBlock.before(cardOffer);
         cardClose = document.querySelector('.popup__close');
-        if (cardClose) {
-          cardClose.addEventListener('click', onCloseClick);
-          cardClose.addEventListener('keydown', onCloseKeydown);
-        }
+        cardClose.addEventListener('click', onCloseClick);
+        cardClose.addEventListener('keydown', onCloseKeydown);
         document.addEventListener('keydown', onEscapeKeydown);
       }
     }
