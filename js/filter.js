@@ -1,12 +1,7 @@
 'use strict';
 
 (function () {
-  // var PRICE_RANGES = {
-  //   'any': [0, Infinity],
-  //   'low': [>= 0, < 9999.99999999],
-  //   'middle': [10000, 50000],
-  //   'high': [50000.00000001, Infinity]
-  // };
+  var MAX_COUNT_PINS = 5;
   var BORDER_PRICES_LOW_MIDDLE = 10000;
   var BORDER_PRICES_MIDDLE_HIGH = 50000;
   var STATUS_PRICE = {
@@ -28,6 +23,7 @@
   var actualOffers = [];
   var pinList = document.querySelector('.map__pins');
   var mapFilters = document.querySelector('.map__filters');
+  var mapFiltersAny = mapFilters.querySelectorAll('option[value = "any"]');
   var mapFilterType = mapFilters.querySelector('#housing-type');
   var mapFilterPrice = mapFilters.querySelector('#housing-price');
   var mapFilterRooms = mapFilters.querySelector('#housing-rooms');
@@ -63,7 +59,7 @@
               if (offer.guests === +guest || guest === ANY_CHOICE) {
                 if (checkFeatures()) {
                   actualOffers.push(offers[i]);
-                  if (actualOffers.length >= window.pin.MAX_COUNT) {
+                  if (actualOffers.length >= MAX_COUNT_PINS) {
                     break;
                   }
                 }
@@ -98,6 +94,12 @@
   };
 
   var disactivate = function () {
+    mapFiltersAny.forEach(function (option) {
+      option.selected = true;
+    });
+    featureElements.forEach(function (option) {
+      option.checked = false;
+    });
     window.util.changeDisabledElements(mapFilters.children, true);
     mapFilterFeatures.removeEventListener('change', onFiltersChange);
   };

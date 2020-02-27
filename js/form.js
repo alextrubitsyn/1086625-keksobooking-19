@@ -8,6 +8,7 @@
   var MIN_COUNT_GUESTS = 0;
   var MAX_COUNT_GUESTS = 3;
   var PALAS_COUNT_ROOMS = 100;
+  var ESC_KEY = 'Escape';
   var VALIDITY_MESSAGES_GUESTS = {
     1: 'В 1 комнате возможно проживание только 1 гостя',
     2: 'В 2 комнатах возможно проживание 1 или 2 гостей',
@@ -173,7 +174,7 @@
   };
 
   var onSuccessKeydown = function (evtCloseSuccess) {
-    if (evtCloseSuccess.key === window.data.ESC_KEY) {
+    if (evtCloseSuccess.key === ESC_KEY) {
       returnStartPage();
     }
   };
@@ -185,7 +186,7 @@
     }
   };
 
-  var onLoad = function (answer) {
+  var onSuccessSave = function (answer) {
     if (answer) {
       successElement = successTemplate.cloneNode(true);
       main.appendChild(successElement);
@@ -205,7 +206,7 @@
   };
 
   var onErrorKeydown = function (evtCloseError) {
-    if (evtCloseError.key === window.data.ESC_KEY) {
+    if (evtCloseError.key === ESC_KEY) {
       cancelError();
     }
   };
@@ -227,7 +228,7 @@
     cancelError();
   };
 
-  var onError = function (message) {
+  var onErrorSave = function (message) {
     if (message) {
       errorElement = errorTemplate.cloneNode(true);
       main.appendChild(errorElement);
@@ -258,7 +259,7 @@
     } else if (!guestsSelector.validity.valid) {
       guestsSelector.reportValidity();
     } else {
-      window.request.save(new FormData(adForm), onLoad, onError);
+      window.request.save(new FormData(adForm), onSuccessSave, onErrorSave);
     }
   };
 

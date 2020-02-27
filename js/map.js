@@ -13,6 +13,7 @@
   var MAX_X = 1200;
   var MIN_Y = 130;
   var MAX_Y = 630;
+  var ENTER_KEY = 'Enter';
 
   var main = document.querySelector('main');
   var map = document.querySelector('.map');
@@ -28,11 +29,11 @@
   address.defaultValue = defaultX + ',' + defaultY;
   address.readOnly = true;
 
-  var onSuccess = function (elements) {
+  var onSuccessLoad = function (elements) {
     window.filter.receiveOffers(elements);
   };
 
-  var onError = function (message) {
+  var onErrorLoad = function (message) {
     if (message) {
       var errorElement = errorTemplate.cloneNode(true);
       errorElement.querySelector('.error__button').remove();
@@ -55,7 +56,7 @@
   };
 
   var onPinKeydown = function (evtKeydown) {
-    if (evtKeydown.key === window.data.ENTER_KEY) {
+    if (evtKeydown.key === ENTER_KEY) {
       window.card.open(evtKeydown.target);
     }
   };
@@ -115,7 +116,7 @@
   };
 
   var onPinMainKeydown = function (evt) {
-    if (evt.key === window.data.ENTER_KEY) {
+    if (evt.key === ENTER_KEY) {
       activate();
       window.form.activate();
     }
@@ -126,7 +127,7 @@
     address.value = address.defaultValue;
     pinMain.removeEventListener('mousedown', onPinMainStartMousedown);
     pinMain.removeEventListener('keydown', onPinMainKeydown);
-    window.request.load(onSuccess, onError);
+    window.request.load(onSuccessLoad, onErrorLoad);
     pinList.addEventListener('click', onPinClick);
     pinList.addEventListener('keydown', onPinKeydown);
     pinMain.addEventListener('mousedown', onPinMainMousedown);

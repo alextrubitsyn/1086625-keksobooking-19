@@ -6,29 +6,24 @@
   var URL_SAVE = 'https://js.dump.academy/keksobooking';
 
   var StatusCode = {
-    OK: 200
-  };
-
-  var searchError = function (cod) {
-    var errors = {
-      '400': 'Синтаксическая ошибка в запросе к серверу',
-      '401': 'Ошибка аутентификации',
-      '403': 'Ошибка ограничения доступа',
-      '404': 'Ошибка адреса запроса',
-      '500': 'Ошибка сервера',
-      'default': 'Ошибка сетевого обмена, код: ' + cod
-    };
-    return errors[cod] || errors['default'];
+    '200': 'OK',
+    '301': 'Данные перенесены на другой ресурс',
+    '400': 'Синтаксическая ошибка в запросе к серверу',
+    '401': 'Ошибка аутентификации',
+    '403': 'Ошибка ограничения доступа',
+    '404': 'Ошибка адреса запроса',
+    '500': 'Ошибка сервера',
+    'default': 'Ошибка сетевого обмена, код: '
   };
 
   var setRequestHandlers = function (xhr, onLoad, onError) {
     xhr.timeout = TIMEOUT;
 
     var onXhpLoad = function () {
-      if (xhr.status === StatusCode.OK) {
+      if (StatusCode[xhr.status] === 'OK') {
         onLoad(xhr.response);
       } else {
-        onError(searchError(xhr.status));
+        onError(StatusCode[xhr.status] || StatusCode['default'] + xhr.status);
       }
       xhr.removeEventListener('load', onXhpLoad);
     };
@@ -59,11 +54,11 @@
     xhr.send();
   };
 
-  var save = function (data, onLoad, onError) {
+  var save = function (data, onSave, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
-    setRequestHandlers(xhr, onLoad, onError);
+    setRequestHandlers(xhr, onSave, onError);
 
     xhr.open('POST', URL_SAVE);
 

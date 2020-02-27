@@ -13,6 +13,14 @@
   var CLASS_ACTIVE_PIN = 'map__pin--active';
   var CLASS_MAIN_PIN = 'map__pin--main';
   var PALAS_COUNT_ROOMS = 100;
+  var ENTER_KEY = 'Enter';
+  var ESC_KEY = 'Escape';
+  var FEATURE_CLASS = 'popup__feature';
+  var BORDER_MODIFIER = '--';
+  var RUBLE_SYMBOL = '₽';
+  var CHECKIN_TEXT = 'Заезд после ';
+  var CHECKOUT_TEXT = ', выезд до ';
+  var STYLE_NONE = 'display: none;';
   var activePin;
   var cardOffer;
   var cardClose;
@@ -41,45 +49,48 @@
   };
 
   var render = function (element) {
-    var FEATURE_CLASS = 'popup__feature';
+
     var cardElement = cardTemplate.cloneNode(true);
+
     cardElement.querySelector('.popup__avatar').src = element.author.avatar;
     cardElement.querySelector('.popup__title').textContent = element.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = element.offer.address;
-    cardElement.querySelector('.popup__text--price').childNodes[0].textContent = element.offer.price + '₽';
+    cardElement.querySelector('.popup__text--price').childNodes[0].textContent = element.offer.price + RUBLE_SYMBOL;
     cardElement.querySelector('.popup__type').textContent = TYPES_RESIDENCE_TRANSLATE[element.offer.type];
     cardElement.querySelector('.popup__text--capacity').textContent =
       makePhraseRoomsGuests(element.offer.rooms, element.offer.guests);
     cardElement.querySelector('.popup__text--time').textContent =
-      'Заезд после ' + element.offer.checkin + ', выезд до ' + element.offer.checkout;
-
-    // Заполнение блока features
+      CHECKIN_TEXT + element.offer.checkin + CHECKOUT_TEXT + element.offer.checkout;
     var feature = cardElement.querySelector('.popup__features');
+    cardElement.querySelector('.popup__description').textContent = element.offer.description;
+    var cardPhoto = cardElement.querySelector('.popup__photo');
 
     if (element.offer.features.length === 0) {
-      feature.style.cssText = 'display: none;';
+      feature.style.cssText = STYLE_NONE;
     } else {
       feature.innerHTML = '';
-      for (var i = 0; i < element.offer.features.length; i++) {
+      element.offer.features.forEach(function (offerFeature) {
         var featureCard = document.createElement('li');
-        featureCard.classList.add(FEATURE_CLASS, FEATURE_CLASS + '--' + element.offer.features[i]);
-        featureCard.textContent = CONVENIENCES_TRANSLATE[element.offer.features[i]];
+        featureCard.classList.add(FEATURE_CLASS, FEATURE_CLASS + BORDER_MODIFIER + offerFeature);
+        featureCard.textContent = CONVENIENCES_TRANSLATE[offerFeature];
         feature.appendChild(featureCard);
-      }
+      });
     }
-    // -----------------------------------------
-    cardElement.querySelector('.popup__description').textContent = element.offer.description;
 
-    var cardPhoto = cardElement.querySelector('.popup__photo');
     if (element.offer.photos.length > 0) {
-      cardPhoto.src = element.offer.photos[0];
-      for (var j = 1; j < element.offer.photos.length; j++) {
-        var newPhoto = cardPhoto.cloneNode(true);
-        newPhoto.src = element.offer.photos[j];
-        cardPhoto.after(newPhoto);
-      }
+      element.offer.photos.forEach(function (photo, index) {
+        if (index === 0) {
+          cardPhoto.src = photo;
+        } else {
+          var newPhoto = cardPhoto.cloneNode(true);
+          if (newPhoto) {
+            newPhoto.src = photo;
+            cardPhoto.after(newPhoto);
+          }
+        }
+      });
     } else {
-      cardPhoto.parentNode.hidden = true;
+      cardPhoto.parentElement.style.cssText = STYLE_NONE;
     }
     return cardElement;
   };
@@ -89,23 +100,24 @@
   };
 
   var onCloseKeydown = function (evtClose) {
-    if (evtClose.key === window.data.ENTER_KEY) {
+    if (evtClose.key === ENTER_KEY) {
       close();
     }
   };
 
   var onEscapeKeydown = function (evtEscape) {
-    if (evtEscape.key === window.data.ESC_KEY) {
+    if (evtEscape.key === ESC_KEY) {
       close();
     }
   };
 
   var close = function () {
+
     if (cardClose) {
       cardClose.removeEventListener('click', onCloseClick);
       cardClose.removeEventListener('keydown', onCloseKeydown);
-      document.removeEventListener('keydown', onEscapeKeydown);
     }
+    document.removeEventListener('keydown', onEscapeKeydown);
     if (cardOffer) {
       cardOffer.remove();
       cardOffer = '';
@@ -137,8 +149,10 @@
         cardOffer = render(offer);
         filtersBlock.before(cardOffer);
         cardClose = document.querySelector('.popup__close');
-        cardClose.addEventListener('click', onCloseClick);
-        cardClose.addEventListener('keydown', onCloseKeydown);
+        if (cardClose) {
+          cardClose.addEventListener('click', onCloseClick);
+          cardClose.addEventListener('keydown', onCloseKeydown);
+        }
         document.addEventListener('keydown', onEscapeKeydown);
       }
     }

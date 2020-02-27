@@ -24,12 +24,12 @@
     if (typeCheck) {
       var reader = new FileReader();
 
-      var onInputLoad = function () {
+      var onFileLoad = function () {
         srcElement.src = reader.result;
-        reader.removeEventListener('load', onInputLoad);
+        reader.removeEventListener('load', onFileLoad);
       };
 
-      reader.addEventListener('load', onInputLoad);
+      reader.addEventListener('load', onFileLoad);
       reader.readAsDataURL(file);
     }
 

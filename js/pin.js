@@ -4,7 +4,6 @@
 
   var OFFSET_X = 25;
   var OFFSET_Y = 70;
-  var MAX_COUNT = 5;
 
   var nearbyPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var fragment = document.createDocumentFragment();
@@ -21,29 +20,27 @@
   };
 
   var makeBlock = function (elements) {
-    var countElements = elements.length > MAX_COUNT ? countElements = MAX_COUNT : elements.length;
     var pinElement;
-    for (var i = 0; i < countElements; i++) {
-      pinElement = render(elements[i]);
-      pinElement.dataset['index'] = i;
+    elements.forEach(function (element, index) {
+      pinElement = render(element);
       if (pinElement) {
+        pinElement.dataset['index'] = index;
         fragment.appendChild(pinElement);
       }
-    }
+    });
     return fragment;
   };
 
   var erase = function () {
     var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var i = 0; i < pins.length; i++) {
-      pins[i].remove();
-    }
+    pins.forEach(function (pin) {
+      pin.remove();
+    });
   };
 
   window.pin = {
     makeBlock: makeBlock,
-    erase: erase,
-    MAX_COUNT: MAX_COUNT,
+    erase: erase
   };
 
 })();
