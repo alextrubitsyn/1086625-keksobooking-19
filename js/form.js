@@ -168,8 +168,14 @@
     roomsSelector.removeEventListener('change', onRoomsChange);
     timeInSelector.removeEventListener('change', onTimeInChange);
     timeOutSelector.removeEventListener('change', onTimeOutChange);
+
     window.map.disactivate();
     disactivate();
+
+    setTimeout(function () {
+      priceInput.placeholder = MIN_PRICE_TYPE[window.util.searchValueSelected(typeSelector)];
+    }, 1);
+
     adForm.classList.add('ad-form--disabled');
   };
 

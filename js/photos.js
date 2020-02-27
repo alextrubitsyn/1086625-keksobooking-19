@@ -12,14 +12,10 @@
   var renderPhoto = function (inputElement, srcElement) {
     var file = inputElement.files[0];
     var fileName = file.name.toLowerCase();
-    var typeCheck = false;
 
-    for (var i = 0; i < FILE_TYPE.length; i++) {
-      if (fileName.endsWith(FILE_TYPE[i])) {
-        typeCheck = true;
-        break;
-      }
-    }
+    var typeCheck = FILE_TYPE.some(function (ext) {
+      return fileName.endsWith(ext);
+    });
 
     if (typeCheck) {
       var reader = new FileReader();
