@@ -52,22 +52,19 @@
       actualOffers = [];
       for (var i = 0; i < offers.length; i++) {
         var offer = offers[i].offer;
+        var statusType = offer.type === type || type === ANY_CHOICE;
+        var statusPrice = STATUS_PRICE[price](offer.price);
+        var statusRooms = offer.rooms === +room || room === ANY_CHOICE;
+        var statusGuests = offer.guests === +guest || guest === ANY_CHOICE;
 
-        if (offer.type === type || type === ANY_CHOICE) {
-          if (STATUS_PRICE[price](offer.price)) {
-            if (offer.rooms === +room || room === ANY_CHOICE) {
-              if (offer.guests === +guest || guest === ANY_CHOICE) {
-                if (checkFeatures()) {
-                  actualOffers.push(offers[i]);
-                  if (actualOffers.length >= MAX_COUNT_PINS) {
-                    break;
-                  }
-                }
-              }
-            }
+        if (statusType && statusPrice && statusRooms && statusGuests && checkFeatures()) {
+          actualOffers.push(offers[i]);
+          if (actualOffers.length >= MAX_COUNT_PINS) {
+            break;
           }
         }
       }
+
       window.card.close();
       window.pin.erase();
       pinList.appendChild(window.pin.makeBlock(actualOffers));

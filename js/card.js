@@ -21,6 +21,9 @@
   var CHECKIN_TEXT = 'Заезд после ';
   var CHECKOUT_TEXT = ', выезд до ';
   var STYLE_NONE = 'display: none;';
+  var SINGULAR = 1;
+  var WITHOUT_ROOMS = 0;
+  var RUSSIAN_COEFFICIENT_FOR_ROOMS = 4;
   var activePin;
   var cardOffer;
   var cardClose;
@@ -30,15 +33,16 @@
 
 
   var makePhraseRoomsGuests = function (countRooms, countGuests) {
+    countRooms = +countRooms.toString().slice(-1);
     var wordRooms = ' комнаты';
     var wordGuests = ' гостей';
-    if (countRooms === 1) {
+    if (countRooms === SINGULAR) {
       wordRooms = ' комната';
     }
-    if (countRooms > 4 || countRooms === 0) {
+    if (countRooms > RUSSIAN_COEFFICIENT_FOR_ROOMS || countRooms === WITHOUT_ROOMS) {
       wordRooms = ' комнат';
     }
-    if (countGuests === 1) {
+    if (countGuests === SINGULAR) {
       wordGuests = ' гостя';
     }
     if (countRooms === PALAS_COUNT_ROOMS) {
